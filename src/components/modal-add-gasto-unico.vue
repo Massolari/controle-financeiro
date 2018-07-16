@@ -1,12 +1,9 @@
 <template>
   <q-dialog
     v-model="myShow"
-    stack-buttons
     prevent-close
-    @ok="onOk"
-    @show="onShow"
     >
-      <span slot="title">{{ mensagem }}</span>
+      <span slot="title">Adicionar gasto único</span>
 
       <div slot="body">
         <q-field class="distance">
@@ -33,8 +30,8 @@
       </div>
 
       <template slot="buttons" slot-scope="props">
-        <q-btn color="primary" label="Adicionar" @click="onOk" />
         <q-btn flat label="Cancelar" @click="cancel" />
+        <q-btn color="primary" label="Adicionar" @click="adicionar" />
       </template>
     </q-dialog>
 </template>
@@ -55,6 +52,7 @@ export default {
   },
   watch: {
     show (newValue, oldValue) {
+      this.limparCampos()
       this.myShow = newValue
     },
     myShow (newValue, oldValue) {
@@ -75,7 +73,7 @@ export default {
     }
   },
   methods: {
-    onOk () {
+    adicionar () {
       this.$v.conta.$touch()
       if (this.$v.conta.$error) {
         this.$q.notify({
@@ -84,12 +82,13 @@ export default {
         })
         return
       }
-      this.$emit('salvar', this.conta)
+      this.$emit('salvar', Object.assign({}, this.conta))
       this.myShow = false
     },
-    onShow () { },
     cancel () {
       this.myShow = false
+    },
+    limparCampos () {
       this.conta.desc = ''
       this.conta.valor = ''
       this.$v.conta.$reset()
