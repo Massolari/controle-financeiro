@@ -38,7 +38,7 @@ export default {
         if (this.opened) {
           this.tooltips = true
         }
-      }, 300)
+      }, 500)
     },
     hideTooltips () {
       this.opened = false

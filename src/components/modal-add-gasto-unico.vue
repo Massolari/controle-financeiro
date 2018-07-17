@@ -10,7 +10,7 @@
           <q-input
             v-model="conta.desc"
             float-label="Descrição"
-            placeholder="Ex.: Conta de luz"
+            placeholder="Ex.: Hambúrguer"
             :error="$v.conta.desc.$error"
             @blur="$v.conta.desc.$touch"
           />

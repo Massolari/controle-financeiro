@@ -52,6 +52,12 @@ export default {
     },
     addUnico (gasto) {
       this.$store.commit('gastos/ADD_UNICO', Object.assign(gasto, this.data))
+    },
+    addMensal (gasto) {
+      this.$store.commit('gastos/ADD_MENSAL', Object.assign(gasto, this.data))
+    },
+    addCartao (gasto) {
+      this.$store.commit('gastos/ADD_CARTAO', Object.assign(gasto, this.data))
     }
   },
   components: {
