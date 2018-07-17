@@ -1,6 +1,8 @@
 <template>
   <q-page padding>
-    <conta-list></conta-list>
+    <conta-list
+     :data="data"
+    ></conta-list>
     <btn-add-conta
      @addUnico="inserirUnico"
      @addMensal="inserirMensal"
