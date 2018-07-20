@@ -1,7 +1,9 @@
 <template>
   <q-page padding>
     <conta-list
-     :data="data"
+      :data="data"
+      @anterior="anterior"
+      @proximo="proximo"
     ></conta-list>
     <btn-add-conta
      @addUnico="inserirUnico"
@@ -60,6 +62,12 @@ export default {
     },
     addCartao (gasto) {
       this.$store.commit('gastos/ADD_CARTAO', Object.assign(gasto, this.data))
+    },
+    anterior () {
+      this.data.mes--
+    },
+    proximo () {
+      this.data.mes++
     }
   },
   components: {

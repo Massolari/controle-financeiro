@@ -1,6 +1,10 @@
 <template>
-  <q-list highlight>
-      <q-list-header>Gastos no mês de {{ mesAtual }} de {{ data.ano }}</q-list-header>
+  <q-list>
+      <q-item>
+          <q-item-side @click="anterior" left icon="arrow_back_ios"/>
+              <q-item-main>Gastos no mês de {{ mesAtual }} de {{ data.ano }}</q-item-main>
+          <q-item-side @click="proximo" right icon="arrow_forward_ios"/>
+      </q-item>
     <q-item-separator></q-item-separator>
     <list-gastos-unicos></list-gastos-unicos>
     <q-item-separator></q-item-separator>
@@ -30,6 +34,12 @@ export default {
     },
     editar (conta) {
       this.$emit('editar', conta)
+    },
+    anterior () {
+      this.$emit('anterior')
+    },
+    proximo () {
+      this.$emit('proximo')
     }
   },
   computed: {
