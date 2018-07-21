@@ -39,7 +39,7 @@ export default {
       addModalMensal: false,
       addModalCartao: false,
       data: {
-        mes: (new Date()).getMonth(),
+        mes: (new Date()).getMonth() + 1,
         ano: (new Date()).getFullYear()
       }
     }
@@ -64,9 +64,19 @@ export default {
       this.$store.commit('gastos/ADD_CARTAO', Object.assign(gasto, this.data))
     },
     anterior () {
+      if (this.data.mes === 1) {
+        this.data.ano--
+        this.data.mes = 12
+        return
+      }
       this.data.mes--
     },
     proximo () {
+      if (this.data.mes === 12) {
+        this.data.ano++
+        this.data.mes = 1
+        return
+      }
       this.data.mes++
     }
   },

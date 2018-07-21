@@ -1,9 +1,13 @@
 <template>
   <q-list>
       <q-item>
-          <q-item-side @click="anterior" left icon="arrow_back_ios"/>
+          <q-item-side left>
+            <i class="material-icons" @click.prevent="anterior">arrow_back_ios</i>
+          </q-item-side>
               <q-item-main>Gastos no mês de {{ mesAtual }} de {{ data.ano }}</q-item-main>
-          <q-item-side @click="proximo" right icon="arrow_forward_ios"/>
+          <q-item-side right>
+            <i class="material-icons" @click.prevent="proximo">arrow_forward_ios</i>
+          </q-item-side>
       </q-item>
     <q-item-separator></q-item-separator>
     <list-gastos-unicos></list-gastos-unicos>
@@ -57,7 +61,7 @@ export default {
         'outubro',
         'novembro',
         'dezembro'
-      ][this.data.mes]
+      ][this.data.mes - 1]
     },
     total () {
       return this.$store.getters['gastos/total']

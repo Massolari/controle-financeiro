@@ -20,11 +20,25 @@
       </q-toolbar>
     </q-layout-header>
 
-    <!-- (Optional) A Drawer; you can add one more with side="right" or change this one's side -->
     <q-layout-drawer
-      side="left"
       v-model="leftDrawer"
+      :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null"
     >
+      <q-list
+        no-border
+        link
+        inset-delimiter
+      >
+        <!-- <q-list-header>Essential Links</q-list-header> -->
+        <q-item link to="/">
+          <q-item-side icon="attach_money" />
+          <q-item-main label="Resumo" sublabel="Gastos do mês" />
+        </q-item>
+        <q-item link to="/cartao">
+          <q-item-side icon="credit_card" />
+          <q-item-main label="Cartão de crédito" sublabel="Gerencie seus cartões" />
+        </q-item>
+      </q-list>
     </q-layout-drawer>
 
     <q-page-container>
