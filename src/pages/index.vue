@@ -5,23 +5,24 @@
       @anterior="anterior"
       @proximo="proximo"
     ></conta-list>
-    <btn-add-conta
-     @addUnico="inserirUnico"
-     @addMensal="inserirMensal"
-     @addCartao="inserirCartao"
-      ></btn-add-conta>
 
-     <modal-add-gasto-unico
+    <btn-add-conta
+      @addUnico="inserirUnico"
+      @addMensal="inserirMensal"
+      @addCartao="inserirCartao"
+    ></btn-add-conta>
+
+    <modal-add-gasto-unico
       :show="addModalUnico"
       @salvar="addUnico"
       @close="() => addModalUnico = false"
-      ></modal-add-gasto-unico>
+    ></modal-add-gasto-unico>
 
-     <modal-add-gasto-mensal
+    <modal-add-gasto-mensal
       :show="addModalMensal"
       @salvar="addMensal"
       @close="() => addModalMensal = false"
-      ></modal-add-gasto-mensal>
+    ></modal-add-gasto-mensal>
   </q-page>
 </template>
 

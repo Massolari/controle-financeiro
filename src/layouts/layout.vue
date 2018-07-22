@@ -26,17 +26,16 @@
     >
       <q-list
         no-border
-        link
         inset-delimiter
       >
-        <!-- <q-list-header>Essential Links</q-list-header> -->
-        <q-item link to="/">
+        <!-- <q-list-header>Opções</q-list-header> -->
+        <q-item exact to="/">
           <q-item-side icon="attach_money" />
           <q-item-main label="Resumo" sublabel="Gastos do mês" />
         </q-item>
-        <q-item link to="/cartao">
+        <q-item to="/cartao">
           <q-item-side icon="credit_card" />
-          <q-item-main label="Cartão de crédito" sublabel="Gerencie seus cartões" />
+          <q-item-main label="Cartões de crédito" sublabel="Gerencie seus cartões" />
         </q-item>
       </q-list>
     </q-layout-drawer>
