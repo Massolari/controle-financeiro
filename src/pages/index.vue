@@ -56,13 +56,19 @@ export default {
       this.addModalCartao = true
     },
     addUnico (gasto) {
-      this.$store.commit('gastos/ADD_UNICO', Object.assign(gasto, this.data))
+      this.$store.dispatch('gastos/addUnico', {
+        gasto: Object.assign(gasto, this.data)
+      })
     },
     addMensal (gasto) {
-      this.$store.commit('gastos/ADD_MENSAL', Object.assign(gasto, this.data))
+      this.$store.dispatch('gastos/addMensal', {
+        gasto: Object.assign(gasto, this.data)
+      })
     },
     addCartao (gasto) {
-      this.$store.commit('gastos/ADD_CARTAO', Object.assign(gasto, this.data))
+      this.$store.dispatch('gastos/addCartao', {
+        gasto: Object.assign(gasto, this.data)
+      })
     },
     anterior () {
       if (this.data.mes === 1) {

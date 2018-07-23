@@ -3,7 +3,7 @@
       <q-item :key="m.desc" v-for="m in mensais">
         <q-item-main :label="toMoney(m.valor)" :sublabel="m.desc"/>
         <q-item-side right>
-          <q-item-tile icon="create" color="blue" @click="editar"/>
+          <q-item-tile icon="create" color="blue" @click="editar(u.id)"/>
         </q-item-side>
       </q-item>
     </q-collapsible>
@@ -18,6 +18,9 @@ export default {
   methods: {
     toMoney (value) {
       return this.$store.getters['gastos/toMoney'](value)
+    },
+    editar (id) {
+      this.$emit('editar', id)
     }
   },
   computed: {
