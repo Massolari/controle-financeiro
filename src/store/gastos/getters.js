@@ -14,6 +14,3 @@ export const totalCartao = (state) => {
 export const total = (state, getters) => {
   return getters.totalUnicos + getters.totalMensais + getters.totalCartao
 }
-export const toMoney = () => (value) => {
-  return `R$ ${parseFloat(value).toFixed(2).replace(/[.]/g, ',')}`
-}

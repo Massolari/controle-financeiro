@@ -40,7 +40,7 @@
 import { required, minValue } from 'vuelidate/lib/validators'
 
 export default {
-  props: ['show', 'mensagem'],
+  props: ['show'],
   data () {
     return {
       myShow: false,

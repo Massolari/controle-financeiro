@@ -34,7 +34,7 @@ export default {
   },
   methods: {
     toMoney (number) {
-      return this.$store.getters['gastos/toMoney'](number)
+      return this.$store.getters['util/toMoney'](number)
     },
     editar (conta) {
       this.$emit('editar', conta)

@@ -17,7 +17,7 @@ export default {
   },
   methods: {
     toMoney (value) {
-      return this.$store.getters['gastos/toMoney'](value)
+      return this.$store.getters['util/toMoney'](value)
     },
     editar (id) {
       this.$emit('editar', id)
