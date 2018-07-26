@@ -1,6 +1,6 @@
 <template>
     <q-collapsible icon="calendar_today" :label="`Gastos mensais (${toMoney(totalMensais)})`">
-      <q-item :key="m.desc" v-for="m in mensais">
+      <q-item :key="m.id" v-for="m in mensais">
         <q-item-main :label="toMoney(m.valor)" :sublabel="m.desc"/>
         <q-item-side right>
           <q-item-tile icon="create" color="blue" @click="editar(u.id)"/>

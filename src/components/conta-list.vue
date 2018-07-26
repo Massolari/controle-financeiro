@@ -34,7 +34,7 @@ export default {
   },
   methods: {
     toMoney (number) {
-      return `R$ ${parseFloat(number).toFixed(2)}`
+      return this.$store.getters['gastos/toMoney'](number)
     },
     editar (conta) {
       this.$emit('editar', conta)

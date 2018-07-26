@@ -1,6 +1,6 @@
 <template>
     <q-collapsible icon="credit_card" :label="`Gastos no cartão (${toMoney(totalCartao)})`">
-      <q-item :key="c.desc" v-for="c in cartao">
+      <q-item :key="c.id" v-for="c in cartao">
         <q-item-main :label="toMoney(c.valor)" :sublabel="c.desc"/>
         <q-item-side right>
           <q-item-tile icon="create" color="blue" @click="editar(u.id)"/>

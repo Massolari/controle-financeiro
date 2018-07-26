@@ -1,6 +1,6 @@
 <template>
     <q-collapsible icon="attach_money" :label="`Gastos únicos (${toMoney(totalUnicos)})`">
-      <q-item :key="u.desc" v-for="u in unicos">
+      <q-item :key="u.id" v-for="u in unicos">
         <q-item-main :label="toMoney(u.valor)" :sublabel="u.desc"/>
         <q-item-side right>
           <q-item-tile icon="create" color="blue" @click="editar(u.id)"/>
