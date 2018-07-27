@@ -34,6 +34,9 @@ import btnAddConta from '../components/btn-add-conta'
 
 export default {
   name: 'PageIndex',
+  mounted () {
+    this.$store.dispatch('gastos/carregar', this.data)
+  },
   data () {
     return {
       addModalUnico: false,

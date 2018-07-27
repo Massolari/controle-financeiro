@@ -21,6 +21,7 @@
         <modal-add-cartao
             :show="addModal"
             @salvar="addCartao"
+            @close="closeModal"
         ></modal-add-cartao>
     </q-page>
 </template>
@@ -41,6 +42,9 @@ export default {
     },
     openModal () {
       this.addModal = true
+    },
+    closeModal () {
+      this.addModal = false
     },
     addCartao (cartao) {
       this.$store.dispatch('cartoes/add', {
