@@ -1,5 +1,5 @@
 <template>
-  <q-layout> <!-- Be sure to play with the Layout demo on docs -->
+  <q-layout view="hHh lpr lfr"> <!-- Be sure to play with the Layout demo on docs -->
 
     <!-- (Optional) The Header -->
     <q-layout-header>

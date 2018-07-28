@@ -17,11 +17,27 @@ const cartaoStore = localforage.createInstance({
 
 export const carregar = ({ state }, data) => {
   state.unicos = []
-  unicosStore.iterate((key, gasto) => {
-    if (gasto.mes === data.mes && gasto.ano === data.ano) {
-      state.unicos.push(gasto)
-    }
-  })
+  return Promise.all([
+    unicosStore.iterate((gasto) => {
+      if (gasto.mes === data.mes && gasto.ano === data.ano) {
+        state.unicos.push(gasto)
+      }
+    }),
+    new Promise((resolve) => {
+      if (state.mensais.length > 0) {
+        resolve()
+        return
+      }
+      mensaisStore.iterate((gasto) => {
+        state.mensais.push(gasto)
+      }).then(() => resolve())
+    }),
+    cartaoStore.iterate((gasto) => {
+      if (gasto.mes === data.mes && gasto.ano === data.ano) {
+        state.cartao.push(gasto)
+      }
+    })
+  ])
 }
 
 export const addUnico = ({ commit }, payload) => {

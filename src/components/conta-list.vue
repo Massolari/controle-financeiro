@@ -1,12 +1,12 @@
 <template>
   <q-list>
       <q-item>
-          <q-item-side left>
-            <i class="material-icons" @click.prevent="anterior">arrow_back_ios</i>
+          <q-item-side left @click.native="anterior">
+            <i class="material-icons" >arrow_back_ios</i>
           </q-item-side>
               <q-item-main>Gastos no mês de {{ mesAtual }} de {{ data.ano }}</q-item-main>
-          <q-item-side right>
-            <i class="material-icons" @click.prevent="proximo">arrow_forward_ios</i>
+          <q-item-side right @click.native="proximo">
+            <i class="material-icons">arrow_forward_ios</i>
           </q-item-side>
       </q-item>
     <q-item-separator></q-item-separator>

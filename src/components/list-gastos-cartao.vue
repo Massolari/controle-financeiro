@@ -1,5 +1,5 @@
 <template>
-    <q-collapsible icon="credit_card" :label="`Gastos no cartão (${toMoney(totalCartao)})`">
+    <q-collapsible opened icon="credit_card" :label="`Gastos no cartão (${toMoney(totalCartao)})`">
       <q-item :key="c.id" v-for="c in cartao">
         <q-item-main :label="toMoney(c.valor)" :sublabel="c.desc"/>
         <q-item-side right>

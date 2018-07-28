@@ -1,9 +1,12 @@
 <template>
-    <q-collapsible icon="attach_money" :label="`Gastos únicos (${toMoney(totalUnicos)})`">
+    <q-collapsible opened icon="attach_money" :label="`Gastos únicos (${toMoney(totalUnicos)})`">
       <q-item :key="u.id" v-for="u in unicos">
         <q-item-main :label="toMoney(u.valor)" :sublabel="u.desc"/>
         <q-item-side right>
-          <q-item-tile icon="create" color="blue" @click="editar(u.id)"/>
+          <q-item-tile icon="delete" color="red" @click.native="excluir(u.id)"/>
+        </q-item-side>
+        <q-item-side right>
+          <q-item-tile icon="create" color="blue" @click.native="editar(u.id)"/>
         </q-item-side>
       </q-item>
     </q-collapsible>
@@ -21,6 +24,9 @@ export default {
     },
     editar (id) {
       this.$emit('editar', id)
+    },
+    excluir (id) {
+      this.$emit('excluir', id)
     }
   },
   computed: {

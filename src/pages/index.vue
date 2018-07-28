@@ -35,7 +35,7 @@ import btnAddConta from '../components/btn-add-conta'
 export default {
   name: 'PageIndex',
   mounted () {
-    this.$store.dispatch('gastos/carregar', this.data)
+    this.carregarDados()
   },
   data () {
     return {
@@ -65,7 +65,7 @@ export default {
     },
     addMensal (gasto) {
       this.$store.dispatch('gastos/addMensal', {
-        gasto: Object.assign(gasto, this.data)
+        gasto
       })
     },
     addCartao (gasto) {
@@ -80,6 +80,7 @@ export default {
         return
       }
       this.data.mes--
+      this.carregarDados()
     },
     proximo () {
       if (this.data.mes === 12) {
@@ -88,6 +89,15 @@ export default {
         return
       }
       this.data.mes++
+      this.carregarDados()
+    },
+    async carregarDados () {
+      this.$q.loading.show({
+        delay: 0,
+        message: 'Carregando gastos...'
+      })
+      await this.$store.dispatch('gastos/carregar', this.data)
+      this.$q.loading.hide()
     }
   },
   components: {
