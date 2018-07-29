@@ -3,17 +3,7 @@ export const someAction = (state) => {
 }
 */
 import uuid from '../../plugins/uuid'
-import localforage from 'localforage'
-
-const unicosStore = localforage.createInstance({
-  name: 'unicos'
-})
-const mensaisStore = localforage.createInstance({
-  name: 'mensais'
-})
-const cartaoStore = localforage.createInstance({
-  name: 'cartao'
-})
+import { unicosStore, mensaisStore, cartaoStore } from '../../persistence/gastos'
 
 export const carregar = ({ state }, data) => {
   state.unicos = []

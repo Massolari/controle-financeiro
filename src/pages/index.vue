@@ -4,6 +4,10 @@
       :data="data"
       @anterior="anterior"
       @proximo="proximo"
+      @editarUnico="editarUnico"
+      @deletarUnico="deletarUnico"
+      @editarMensal="editarMensal"
+      @editarCartao="editarCartao"
     ></conta-list>
 
     <btn-add-conta
@@ -13,15 +17,22 @@
     ></btn-add-conta>
 
     <modal-add-gasto-unico
-      :show="addModalUnico"
+      :show="adicionar.modal.unico"
       @salvar="addUnico"
-      @close="() => addModalUnico = false"
+      @close="() => adicionar.modal.unico = false"
     ></modal-add-gasto-unico>
 
+    <modal-edit-gasto-unico
+      :show="editar.modal.unico"
+      :gasto="editar.gasto"
+      @salvar="salvarUnico"
+      @close="() => editar.modal.unico = false"
+    ></modal-edit-gasto-unico>
+
     <modal-add-gasto-mensal
-      :show="addModalMensal"
+      :show="adicionar.modal.mensal"
       @salvar="addMensal"
-      @close="() => addModalMensal = false"
+      @close="() => adicionar.modal.mensal = false"
     ></modal-add-gasto-mensal>
   </q-page>
 </template>
@@ -29,8 +40,10 @@
 <script>
 import contaList from '../components/conta-list'
 import modalAddGastoUnico from '../components/modal-add-gasto-unico'
+import modalEditGastoUnico from '../components/modal-edit-gasto-unico'
 import modalAddGastoMensal from '../components/modal-add-gasto-mensal'
 import btnAddConta from '../components/btn-add-conta'
+import { unicosStore } from '../persistence/gastos'
 
 export default {
   name: 'PageIndex',
@@ -39,29 +52,59 @@ export default {
   },
   data () {
     return {
-      addModalUnico: false,
-      addModalMensal: false,
-      addModalCartao: false,
       data: {
         mes: (new Date()).getMonth() + 1,
         ano: (new Date()).getFullYear()
+      },
+      adicionar: {
+        modal: {
+          unico: false,
+          mensal: false,
+          cartao: false
+        }
+      },
+      editar: {
+        gasto: {},
+        modal: {
+          unico: false,
+          mensal: false,
+          cartao: false
+        }
       }
     }
   },
   methods: {
     inserirUnico () {
-      this.addModalUnico = true
+      this.adicionar.modal.unico = true
     },
     inserirMensal () {
-      this.addModalMensal = true
+      this.adicionar.modal.mensal = true
     },
     inserirCartao () {
-      this.addModalCartao = true
+      this.adicionar.modal.cartao = true
     },
     addUnico (gasto) {
       this.$store.dispatch('gastos/addUnico', {
         gasto: Object.assign(gasto, this.data)
       })
+    },
+    async salvarUnico (gasto) {
+      await unicosStore.setItem(gasto.id, gasto)
+      this.carregarDados()
+    },
+    deletarUnico (gastoId) {
+      this.$q.dialog({
+        title: 'Atenção!',
+        message: 'Tem certeza que deseja deletar o gasto?',
+        ok: {
+          label: 'Deletar',
+          color: 'red'
+        },
+        cancel: 'Cancelar'
+      }).then(async () => {
+        await unicosStore.removeItem(gastoId)
+        this.carregarDados()
+      }).catch(() => {})
     },
     addMensal (gasto) {
       this.$store.dispatch('gastos/addMensal', {
@@ -72,6 +115,18 @@ export default {
       this.$store.dispatch('gastos/addCartao', {
         gasto: Object.assign(gasto, this.data)
       })
+    },
+    async editarUnico (gastoId) {
+      this.editar.gasto = await unicosStore.getItem(gastoId)
+      this.editar.modal.unico = true
+    },
+    editarMensal (gasto) {
+      this.editar.gasto = gasto
+      this.editar.modal.mensal = true
+    },
+    editarCartao (gasto) {
+      this.editar.gasto = gasto
+      this.editar.modal.cartao = true
     },
     anterior () {
       if (this.data.mes === 1) {
@@ -103,6 +158,7 @@ export default {
   components: {
     contaList,
     modalAddGastoUnico,
+    modalEditGastoUnico,
     btnAddConta,
     modalAddGastoMensal
   }

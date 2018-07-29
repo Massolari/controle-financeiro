@@ -1,37 +1,37 @@
 <template>
   <q-dialog
-    v-model="_myShow"
+    v-model="myShow"
     prevent-close
     >
-      <span slot="title">Adicionar gasto único</span>
+      <span slot="title">Editar gasto único</span>
 
       <div slot="body">
         <q-field class="distance">
           <q-input
-            v-model="_gasto.desc"
+            v-model="myGasto.desc"
             float-label="Descrição"
             placeholder="Ex.: Hambúrguer"
-            :error="$v._gasto.desc.$error"
-            @blur="$v._gasto.desc.$touch"
+            :error="$v.myGasto.desc.$error"
+            @blur="$v.myGasto.desc.$touch"
           />
         </q-field>
         <q-field class="distance">
           <q-input
-            v-model="_gasto.valor"
+            v-model="myGasto.valor"
             type="number"
             :decimals="2"
             :step="1.4"
             prefix="R$ "
             float-label="Valor"
-            :error="$v._gasto.valor.$error"
-            @blur="$v._gasto.valor.$touch"
+            :error="$v.myGasto.valor.$error"
+            @blur="$v.myGasto.valor.$touch"
           />
         </q-field>
       </div>
 
       <template slot="buttons" slot-scope="props">
         <q-btn flat label="Cancelar" @click="cancel" />
-        <q-btn color="primary" label="Salvar" @click="salvar" />
+        <q-btn color="secondary" label="Salvar" @click="salvar" />
       </template>
     </q-dialog>
 </template>
@@ -43,8 +43,8 @@ export default {
   props: ['show', 'gasto'],
   data () {
     return {
-      _myShow: false,
-      _gasto: {
+      myShow: false,
+      myGasto: {
         id: '',
         desc: '',
         valor: 0
@@ -53,9 +53,9 @@ export default {
   },
   watch: {
     show (newValue, oldValue) {
-      this._myShow = newValue
+      this.myShow = newValue
     },
-    _myShow (newValue, oldValue) {
+    myShow (newValue, oldValue) {
       if (newValue) {
         this.$emit('open')
       } else {
@@ -64,12 +64,12 @@ export default {
     },
     gasto (newValue) {
       if (newValue) {
-        this._gasto = newValue
+        this.myGasto = newValue
       }
     }
   },
   validations: {
-    _gasto: {
+    myGasto: {
       desc: { required },
       valor: {
         required,
@@ -79,19 +79,19 @@ export default {
   },
   methods: {
     salvar () {
-      this.$v._gasto.$touch()
-      if (this.$v._gasto.$error) {
+      this.$v.myGasto.$touch()
+      if (this.$v.myGasto.$error) {
         this.$q.notify({
           message: 'Descrição e valor devem estar preenchidos!',
           position: 'top'
         })
         return
       }
-      this.$emit('salvar', Object.assign({}, this._gasto))
-      this._myShow = false
+      this.$emit('salvar', Object.assign({}, this.myGasto))
+      this.myShow = false
     },
     cancel () {
-      this._myShow = false
+      this.myShow = false
     }
   }
 }

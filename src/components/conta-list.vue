@@ -1,16 +1,31 @@
 <template>
   <q-list>
       <q-item>
-          <q-item-side left @click.native="anterior">
-            <i class="material-icons" >arrow_back_ios</i>
+          <q-item-side left>
+              <q-btn
+                  icon="arrow_back_ios"
+                  round
+                  outline
+                  size="sm"
+                  @click="anterior"
+              />
           </q-item-side>
               <q-item-main>Gastos no mês de {{ mesAtual }} de {{ data.ano }}</q-item-main>
-          <q-item-side right @click.native="proximo">
-            <i class="material-icons">arrow_forward_ios</i>
+          <q-item-side right>
+              <q-btn
+                  icon="arrow_forward_ios"
+                  round
+                  outline
+                  size="sm"
+                  @click="proximo"
+              />
           </q-item-side>
       </q-item>
     <q-item-separator></q-item-separator>
-    <list-gastos-unicos></list-gastos-unicos>
+    <list-gastos-unicos
+        @deletar="deletarUnico"
+        @editar="editarUnico"
+    ></list-gastos-unicos>
     <q-item-separator></q-item-separator>
     <list-gastos-mensais></list-gastos-mensais>
     <q-item-separator></q-item-separator>
@@ -36,8 +51,17 @@ export default {
     toMoney (number) {
       return this.$store.getters['util/toMoney'](number)
     },
-    editar (conta) {
-      this.$emit('editar', conta)
+    editarUnico (gastoId) {
+      this.$emit('editarUnico', gastoId)
+    },
+    deletarUnico (gastoId) {
+      this.$emit('deletarUnico', gastoId)
+    },
+    editarMensal (gasto) {
+      this.$emit('editarMensal', gasto)
+    },
+    editarCartao (gasto) {
+      this.$emit('editarCartao', gasto)
     },
     anterior () {
       this.$emit('anterior')

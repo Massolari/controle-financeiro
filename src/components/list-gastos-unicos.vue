@@ -3,10 +3,22 @@
       <q-item :key="u.id" v-for="u in unicos">
         <q-item-main :label="toMoney(u.valor)" :sublabel="u.desc"/>
         <q-item-side right>
-          <q-item-tile icon="delete" color="red" @click.native="excluir(u.id)"/>
-        </q-item-side>
-        <q-item-side right>
-          <q-item-tile icon="create" color="blue" @click.native="editar(u.id)"/>
+          <q-btn
+              icon="delete"
+              round
+              outline
+              text-color="red"
+              size="md"
+              @click="deletar(u.id)"
+          />
+          <q-btn
+              icon="create"
+              round
+              outline
+              text-color="blue"
+              size="md"
+              @click="editar(u.id)"
+          />
         </q-item-side>
       </q-item>
     </q-collapsible>
@@ -25,8 +37,8 @@ export default {
     editar (id) {
       this.$emit('editar', id)
     },
-    excluir (id) {
-      this.$emit('excluir', id)
+    deletar (id) {
+      this.$emit('deletar', id)
     }
   },
   computed: {
