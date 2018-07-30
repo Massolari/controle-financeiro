@@ -5,7 +5,7 @@ export const someAction = (state) => {
 import uuid from '../../plugins/uuid'
 import { unicosStore, mensaisStore, cartaoStore } from '../../persistence/gastos'
 
-export const carregar = ({ state }, data) => {
+export const carregar = ({ state }, { data, force }) => {
   state.unicos = []
   return Promise.all([
     unicosStore.iterate((gasto) => {
@@ -14,10 +14,11 @@ export const carregar = ({ state }, data) => {
       }
     }),
     new Promise((resolve) => {
-      if (state.mensais.length > 0) {
+      if (!force && state.mensais.length > 0) {
         resolve()
         return
       }
+      state.mensais = []
       mensaisStore.iterate((gasto) => {
         state.mensais.push(gasto)
       }).then(() => resolve())

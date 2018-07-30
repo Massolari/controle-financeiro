@@ -7,6 +7,7 @@
       @editarUnico="editarUnico"
       @deletarUnico="deletarUnico"
       @editarMensal="editarMensal"
+      @deletarMensal="deletarMensal"
       @editarCartao="editarCartao"
     ></conta-list>
 
@@ -24,7 +25,7 @@
 
     <modal-edit-gasto-unico
       :show="editar.modal.unico"
-      :gasto="editar.gasto"
+      :gasto="editar.gasto.unico"
       @salvar="salvarUnico"
       @close="() => editar.modal.unico = false"
     ></modal-edit-gasto-unico>
@@ -34,6 +35,14 @@
       @salvar="addMensal"
       @close="() => adicionar.modal.mensal = false"
     ></modal-add-gasto-mensal>
+
+    <modal-edit-gasto-mensal
+      :show="editar.modal.mensal"
+      :gasto="editar.gasto.mensal"
+      @salvar="salvarMensal"
+      @close="() => editar.modal.mensal = false"
+    ></modal-edit-gasto-mensal>
+
   </q-page>
 </template>
 
@@ -42,8 +51,9 @@ import contaList from '../components/conta-list'
 import modalAddGastoUnico from '../components/modal-add-gasto-unico'
 import modalEditGastoUnico from '../components/modal-edit-gasto-unico'
 import modalAddGastoMensal from '../components/modal-add-gasto-mensal'
+import modalEditGastoMensal from '../components/modal-edit-gasto-mensal'
 import btnAddConta from '../components/btn-add-conta'
-import { unicosStore } from '../persistence/gastos'
+import { unicosStore, mensaisStore } from '../persistence/gastos'
 
 export default {
   name: 'PageIndex',
@@ -64,7 +74,11 @@ export default {
         }
       },
       editar: {
-        gasto: {},
+        gasto: {
+          unico: {},
+          mensal: {},
+          cartao: {}
+        },
         modal: {
           unico: false,
           mensal: false,
@@ -93,15 +107,7 @@ export default {
       this.carregarDados()
     },
     deletarUnico (gastoId) {
-      this.$q.dialog({
-        title: 'Atenção!',
-        message: 'Tem certeza que deseja deletar o gasto?',
-        ok: {
-          label: 'Deletar',
-          color: 'red'
-        },
-        cancel: 'Cancelar'
-      }).then(async () => {
+      this.confirmarDeletar().then(async () => {
         await unicosStore.removeItem(gastoId)
         this.carregarDados()
       }).catch(() => {})
@@ -111,22 +117,43 @@ export default {
         gasto
       })
     },
+    async salvarMensal (gasto) {
+      await mensaisStore.setItem(gasto.id, gasto)
+      this.carregarDados(true)
+    },
+    deletarMensal (gastoId) {
+      this.confirmarDeletar().then(async () => {
+        await mensaisStore.removeItem(gastoId)
+        this.carregarDados(true)
+      }).catch(() => {})
+    },
     addCartao (gasto) {
       this.$store.dispatch('gastos/addCartao', {
         gasto: Object.assign(gasto, this.data)
       })
     },
     async editarUnico (gastoId) {
-      this.editar.gasto = await unicosStore.getItem(gastoId)
+      this.editar.gasto.unico = await unicosStore.getItem(gastoId)
       this.editar.modal.unico = true
     },
-    editarMensal (gasto) {
-      this.editar.gasto = gasto
+    async editarMensal (gastoId) {
+      this.editar.gasto.mensal = await mensaisStore.getItem(gastoId)
       this.editar.modal.mensal = true
     },
     editarCartao (gasto) {
       this.editar.gasto = gasto
       this.editar.modal.cartao = true
+    },
+    confirmarDeletar () {
+      return this.$q.dialog({
+        title: 'Atenção!',
+        message: 'Tem certeza que deseja deletar o gasto?',
+        ok: {
+          label: 'Deletar',
+          color: 'red'
+        },
+        cancel: 'Cancelar'
+      })
     },
     anterior () {
       if (this.data.mes === 1) {
@@ -146,12 +173,15 @@ export default {
       this.data.mes++
       this.carregarDados()
     },
-    async carregarDados () {
+    async carregarDados (force = false) {
       this.$q.loading.show({
         delay: 0,
         message: 'Carregando gastos...'
       })
-      await this.$store.dispatch('gastos/carregar', this.data)
+      await this.$store.dispatch('gastos/carregar', {
+        data: this.data,
+        force
+      })
       this.$q.loading.hide()
     }
   },
@@ -160,7 +190,8 @@ export default {
     modalAddGastoUnico,
     modalEditGastoUnico,
     btnAddConta,
-    modalAddGastoMensal
+    modalAddGastoMensal,
+    modalEditGastoMensal
   }
 }
 </script>

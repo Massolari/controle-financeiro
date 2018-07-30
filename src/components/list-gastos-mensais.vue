@@ -3,7 +3,22 @@
       <q-item :key="m.id" v-for="m in mensais">
         <q-item-main :label="toMoney(m.valor)" :sublabel="m.desc"/>
         <q-item-side right>
-          <q-item-tile icon="create" color="blue" @click="editar(u.id)"/>
+          <q-btn
+              icon="delete"
+              round
+              outline
+              text-color="red"
+              size="md"
+              @click="deletar(m.id)"
+          />
+          <q-btn
+              icon="create"
+              round
+              outline
+              text-color="blue"
+              size="md"
+              @click="editar(m.id)"
+          />
         </q-item-side>
       </q-item>
     </q-collapsible>
@@ -21,6 +36,9 @@ export default {
     },
     editar (id) {
       this.$emit('editar', id)
+    },
+    deletar (id) {
+      this.$emit('deletar', id)
     }
   },
   computed: {

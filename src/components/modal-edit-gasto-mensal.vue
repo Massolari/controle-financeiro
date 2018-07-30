@@ -3,7 +3,7 @@
     v-model="myShow"
     prevent-close
     >
-      <span slot="title">Adicionar gasto mensal</span>
+      <span slot="title">Editar gasto mensal</span>
 
       <div slot="body">
         <q-field class="distance">
@@ -38,7 +38,7 @@
 
       <template slot="buttons" slot-scope="props">
         <q-btn flat label="Cancelar" @click="cancel" />
-        <q-btn color="primary" label="Adicionar" @click="adicionar" />
+        <q-btn color="secondary" label="Salvar" @click="salvar" />
       </template>
     </q-dialog>
 </template>
@@ -47,11 +47,11 @@
 import { required, minValue } from 'vuelidate/lib/validators'
 
 export default {
-  props: ['show'],
+  props: ['show', 'gasto'],
   data () {
     return {
       myShow: false,
-      conta: {
+      myGasto: {
         desc: '',
         valor: 0,
         vencimento: 1
@@ -65,7 +65,6 @@ export default {
   },
   watch: {
     show (newValue, oldValue) {
-      this.limparCampos()
       this.myShow = newValue
     },
     myShow (newValue, oldValue) {
@@ -73,6 +72,11 @@ export default {
         this.$emit('open')
       } else {
         this.$emit('close')
+      }
+    },
+    gasto (newValue) {
+      if (newValue) {
+        this.myGasto = newValue
       }
     }
   },
@@ -100,12 +104,6 @@ export default {
     },
     cancel () {
       this.myShow = false
-    },
-    limparCampos () {
-      this.conta.desc = ''
-      this.conta.valor = ''
-      this.conta.vencimento = 1
-      this.$v.conta.$reset()
     }
   }
 }

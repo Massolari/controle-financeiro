@@ -27,7 +27,10 @@
         @editar="editarUnico"
     ></list-gastos-unicos>
     <q-item-separator></q-item-separator>
-    <list-gastos-mensais></list-gastos-mensais>
+    <list-gastos-mensais
+        @deletar="deletarMensal"
+        @editar="editarMensal"
+    ></list-gastos-mensais>
     <q-item-separator></q-item-separator>
     <list-gastos-cartao></list-gastos-cartao>
     <q-item-separator></q-item-separator>
@@ -57,8 +60,11 @@ export default {
     deletarUnico (gastoId) {
       this.$emit('deletarUnico', gastoId)
     },
-    editarMensal (gasto) {
-      this.$emit('editarMensal', gasto)
+    editarMensal (gastoId) {
+      this.$emit('editarMensal', gastoId)
+    },
+    deletarMensal (gastoId) {
+      this.$emit('deletarMensal', gastoId)
     },
     editarCartao (gasto) {
       this.$emit('editarCartao', gasto)
