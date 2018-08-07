@@ -8,29 +8,29 @@
       <div slot="body">
         <q-field class="distance">
           <q-input
-            v-model="conta.desc"
+            v-model="myGasto.desc"
             float-label="Descrição"
             placeholder="Ex.: Conta de luz"
-            :error="$v.conta.desc.$error"
-            @blur="$v.conta.desc.$touch"
+            :error="$v.myGasto.desc.$error"
+            @blur="$v.myGasto.desc.$touch"
           />
         </q-field>
         <q-field class="distance">
           <q-input
-            v-model="conta.valor"
+            v-model="myGasto.valor"
             type="number"
             :decimals="2"
             :step="1.4"
             prefix="R$ "
             float-label="Valor"
-            :error="$v.conta.valor.$error"
-            @blur="$v.conta.valor.$touch"
+            :error="$v.myGasto.valor.$error"
+            @blur="$v.myGasto.valor.$touch"
           />
         </q-field>
         <q-field class="distance">
           <q-select
             float-label="Vencimento"
-            v-model="conta.vencimento"
+            v-model="myGasto.vencimento"
             :options="dias"
           />
         </q-field>
@@ -81,7 +81,7 @@ export default {
     }
   },
   validations: {
-    conta: {
+    myGasto: {
       desc: { required },
       valor: {
         required,
@@ -90,16 +90,16 @@ export default {
     }
   },
   methods: {
-    adicionar () {
-      this.$v.conta.$touch()
-      if (this.$v.conta.$error) {
+    salvar () {
+      this.$v.myGasto.$touch()
+      if (this.$v.myGasto.$error) {
         this.$q.notify({
           message: 'Descrição e valor devem estar preenchidos!',
           position: 'top'
         })
         return
       }
-      this.$emit('salvar', Object.assign({}, this.conta))
+      this.$emit('salvar', Object.assign({}, this.myGasto))
       this.myShow = false
     },
     cancel () {

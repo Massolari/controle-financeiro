@@ -3,35 +3,35 @@
     v-model="myShow"
     prevent-close
     >
-      <span slot="title">Adicionar cartão</span>
+      <span slot="title">Editar cartão</span>
 
       <div slot="body">
         <q-field class="distance">
           <q-input
-            v-model="cartao.nome"
+            v-model="myCartao.nome"
             float-label="Nome"
             placeholder="Ex.: Mastercard"
-            :error="$v.cartao.nome.$error"
-            @blur="$v.cartao.nome.$touch"
+            :error="$v.myCartao.nome.$error"
+            @blur="$v.myCartao.nome.$touch"
           />
         </q-field>
         <q-field class="distance">
           <q-input
-            v-model="cartao.limite"
+            v-model="myCartao.limite"
             type="number"
             :decimals="2"
             :step="1.4"
             prefix="R$ "
             float-label="Limite"
-            :error="$v.cartao.limite.$error"
-            @blur="$v.cartao.limite.$touch"
+            :error="$v.myCartao.limite.$error"
+            @blur="$v.myCartao.limite.$touch"
           />
         </q-field>
 
         <q-field class="distance">
           <q-select
             float-label="Dia que o cartão vira"
-            v-model="cartao.vira"
+            v-model="myCartao.vira"
             :options="dias"
           />
         </q-field>
@@ -39,7 +39,7 @@
 
       <template slot="buttons" slot-scope="props">
         <q-btn flat label="Cancelar" @click="cancel" />
-        <q-btn color="primary" label="Adicionar" @click="adicionar" />
+        <q-btn color="secondary" label="Salvar" @click="salvar" />
       </template>
     </q-dialog>
 </template>
@@ -48,11 +48,11 @@
 import { required, minValue } from 'vuelidate/lib/validators'
 
 export default {
-  props: ['show'],
+  props: ['show', 'cartao'],
   data () {
     return {
       myShow: false,
-      cartao: {
+      myCartao: {
         nome: '',
         limite: 0,
         vira: 1
@@ -66,7 +66,6 @@ export default {
   },
   watch: {
     show (newValue, oldValue) {
-      this.limparCampos()
       this.myShow = newValue
     },
     myShow (newValue, oldValue) {
@@ -75,10 +74,15 @@ export default {
       } else {
         this.$emit('close')
       }
+    },
+    cartao (newValue) {
+      if (newValue) {
+        this.myCartao = newValue
+      }
     }
   },
   validations: {
-    cartao: {
+    myCartao: {
       nome: { required },
       limite: {
         required,
@@ -87,26 +91,20 @@ export default {
     }
   },
   methods: {
-    adicionar () {
-      this.$v.cartao.$touch()
-      if (this.$v.cartao.$error) {
+    salvar () {
+      this.$v.myCartao.$touch()
+      if (this.$v.myCartao.$error) {
         this.$q.notify({
           message: 'Nome e limite devem estar preenchidos!',
           position: 'top'
         })
         return
       }
-      this.$emit('salvar', Object.assign({}, this.cartao))
+      this.$emit('salvar', Object.assign({}, this.myCartao))
       this.myShow = false
     },
     cancel () {
       this.myShow = false
-    },
-    limparCampos () {
-      this.cartao.nome = ''
-      this.cartao.limite = ''
-      this.cartao.vira = 1
-      this.$v.cartao.$reset()
     }
   }
 }

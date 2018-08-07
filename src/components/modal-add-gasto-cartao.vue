@@ -3,36 +3,35 @@
     v-model="myShow"
     prevent-close
     >
-      <span slot="title">Adicionar cartão</span>
+      <span slot="title">Adicionar gasto no cartão</span>
 
       <div slot="body">
         <q-field class="distance">
           <q-input
-            v-model="cartao.nome"
-            float-label="Nome"
-            placeholder="Ex.: Mastercard"
-            :error="$v.cartao.nome.$error"
-            @blur="$v.cartao.nome.$touch"
+            v-model="gasto.desc"
+            float-label="Descrição"
+            placeholder="Ex.: Geladeira"
+            :error="$v.gasto.desc.$error"
+            @blur="$v.gasto.desc.$touch"
           />
         </q-field>
         <q-field class="distance">
           <q-input
-            v-model="cartao.limite"
+            v-model="gasto.valor"
             type="number"
             :decimals="2"
             :step="1.4"
             prefix="R$ "
-            float-label="Limite"
-            :error="$v.cartao.limite.$error"
-            @blur="$v.cartao.limite.$touch"
+            float-label="Valor"
+            :error="$v.gasto.valor.$error"
+            @blur="$v.gasto.valor.$touch"
           />
         </q-field>
-
         <q-field class="distance">
           <q-select
-            float-label="Dia que o cartão vira"
-            v-model="cartao.vira"
-            :options="dias"
+            float-label="Cartão"
+            v-model="gasto.cartao"
+            :options="cartoes"
           />
         </q-field>
       </div>
@@ -52,16 +51,16 @@ export default {
   data () {
     return {
       myShow: false,
-      cartao: {
-        nome: '',
-        limite: 0,
-        vira: 1
+      gasto: {
+        desc: '',
+        valor: 0,
+        vencimento: 1
       }
     }
   },
   computed: {
     dias () {
-      return this.$store.state.util.dias
+      return this.$store.state.cartoes.cartoes
     }
   },
   watch: {
@@ -78,9 +77,9 @@ export default {
     }
   },
   validations: {
-    cartao: {
-      nome: { required },
-      limite: {
+    gasto: {
+      desc: { required },
+      valor: {
         required,
         minValue: minValue(0.01)
       }
@@ -88,30 +87,29 @@ export default {
   },
   methods: {
     adicionar () {
-      this.$v.cartao.$touch()
-      if (this.$v.cartao.$error) {
+      this.$v.gasto.$touch()
+      if (this.$v.gasto.$error) {
         this.$q.notify({
-          message: 'Nome e limite devem estar preenchidos!',
+          message: 'Descrição, valor e cartão devem estar preenchidos!',
           position: 'top'
         })
         return
       }
-      this.$emit('salvar', Object.assign({}, this.cartao))
+      this.$emit('salvar', Object.assign({}, this.gasto))
       this.myShow = false
     },
     cancel () {
       this.myShow = false
     },
     limparCampos () {
-      this.cartao.nome = ''
-      this.cartao.limite = ''
-      this.cartao.vira = 1
-      this.$v.cartao.$reset()
+      this.gasto.desc = ''
+      this.gasto.valor = ''
+      this.gasto.cartao = ''
+      this.$v.gasto.$reset()
     }
   }
 }
 </script>
-
 <style>
     .distance {
         padding: 5px;

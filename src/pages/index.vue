@@ -58,7 +58,7 @@ import { unicosStore, mensaisStore } from '../persistence/gastos'
 export default {
   name: 'PageIndex',
   mounted () {
-    this.carregarDados()
+    this.carregarGastos()
   },
   data () {
     return {
@@ -95,6 +95,7 @@ export default {
       this.adicionar.modal.mensal = true
     },
     inserirCartao () {
+      this.carregarCartoes()
       this.adicionar.modal.cartao = true
     },
     addUnico (gasto) {
@@ -104,12 +105,12 @@ export default {
     },
     async salvarUnico (gasto) {
       await unicosStore.setItem(gasto.id, gasto)
-      this.carregarDados()
+      this.carregarGastos()
     },
     deletarUnico (gastoId) {
       this.confirmarDeletar().then(async () => {
         await unicosStore.removeItem(gastoId)
-        this.carregarDados()
+        this.carregarGastos()
       }).catch(() => {})
     },
     addMensal (gasto) {
@@ -119,12 +120,12 @@ export default {
     },
     async salvarMensal (gasto) {
       await mensaisStore.setItem(gasto.id, gasto)
-      this.carregarDados(true)
+      this.carregarGastos(true)
     },
     deletarMensal (gastoId) {
       this.confirmarDeletar().then(async () => {
         await mensaisStore.removeItem(gastoId)
-        this.carregarDados(true)
+        this.carregarGastos(true)
       }).catch(() => {})
     },
     addCartao (gasto) {
@@ -162,7 +163,7 @@ export default {
         return
       }
       this.data.mes--
-      this.carregarDados()
+      this.carregarGastos()
     },
     proximo () {
       if (this.data.mes === 12) {
@@ -171,15 +172,25 @@ export default {
         return
       }
       this.data.mes++
-      this.carregarDados()
+      this.carregarGastos()
     },
-    async carregarDados (force = false) {
+    async carregarGastos (force = false) {
       this.$q.loading.show({
         delay: 0,
         message: 'Carregando gastos...'
       })
       await this.$store.dispatch('gastos/carregar', {
         data: this.data,
+        force
+      })
+      this.$q.loading.hide()
+    },
+    async carregarCartoes (force = false) {
+      this.$q.loading.show({
+        delay: 0,
+        message: 'Carregando cartões...'
+      })
+      await this.$store.dispatch('cartoes/carregar', {
         force
       })
       this.$q.loading.hide()
