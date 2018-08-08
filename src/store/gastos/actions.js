@@ -23,10 +23,17 @@ export const carregar = ({ state }, { data, force }) => {
         state.mensais.push(gasto)
       }).then(() => resolve())
     }),
-    cartaoStore.iterate((gasto) => {
-      if (gasto.mes === data.mes && gasto.ano === data.ano) {
-        state.cartao.push(gasto)
+    new Promise(resolve => {
+      if (!force && state.cartao.length > 0) {
+        resolve()
+        return
       }
+      state.cartao = []
+      cartaoStore.iterate((gasto) => {
+        if (gasto.mes === data.mes && gasto.ano === data.ano) {
+          state.cartao.push(gasto)
+        }
+      }).then(() => resolve())
     })
   ])
 }

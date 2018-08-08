@@ -20,20 +20,20 @@
     <modal-add-gasto-unico
       :show="adicionar.modal.unico"
       @salvar="addUnico"
-      @close="() => adicionar.modal.unico = false"
+      :close="() => adicionar.modal.unico = false"
     ></modal-add-gasto-unico>
 
     <modal-edit-gasto-unico
       :show="editar.modal.unico"
       :gasto="editar.gasto.unico"
       @salvar="salvarUnico"
-      @close="() => editar.modal.unico = false"
+      :close="() => editar.modal.unico = false"
     ></modal-edit-gasto-unico>
 
     <modal-add-gasto-mensal
       :show="adicionar.modal.mensal"
       @salvar="addMensal"
-      @close="() => adicionar.modal.mensal = false"
+      :close="() => adicionar.modal.mensal = false"
     ></modal-add-gasto-mensal>
 
     <modal-edit-gasto-mensal
@@ -42,6 +42,12 @@
       @salvar="salvarMensal"
       @close="() => editar.modal.mensal = false"
     ></modal-edit-gasto-mensal>
+
+    <modal-add-gasto-cartao
+      :show="adicionar.modal.cartao"
+      @salvar="addCartao"
+      @close="() => adicionar.modal.cartao = false"
+    ></modal-add-gasto-cartao>
 
   </q-page>
 </template>
@@ -52,6 +58,7 @@ import modalAddGastoUnico from '../components/modal-add-gasto-unico'
 import modalEditGastoUnico from '../components/modal-edit-gasto-unico'
 import modalAddGastoMensal from '../components/modal-add-gasto-mensal'
 import modalEditGastoMensal from '../components/modal-edit-gasto-mensal'
+import modalAddGastoCartao from '../components/modal-add-gasto-cartao'
 import btnAddConta from '../components/btn-add-conta'
 import { unicosStore, mensaisStore } from '../persistence/gastos'
 
@@ -96,15 +103,24 @@ export default {
     },
     inserirCartao () {
       this.carregarCartoes()
+      if (this.$store.state.cartoes.cartoes.length === 0) {
+        this.$q.dialog({
+          title: 'Atenção!',
+          message: 'Primeiro você deve cadastrar um cartão!'
+        })
+        return
+      }
       this.adicionar.modal.cartao = true
     },
     addUnico (gasto) {
       this.$store.dispatch('gastos/addUnico', {
         gasto: Object.assign(gasto, this.data)
       })
+      this.adicionar.modal.unico = false
     },
     async salvarUnico (gasto) {
       await unicosStore.setItem(gasto.id, gasto)
+      this.editar.modal.unico = false
       this.carregarGastos()
     },
     deletarUnico (gastoId) {
@@ -117,9 +133,11 @@ export default {
       this.$store.dispatch('gastos/addMensal', {
         gasto
       })
+      this.adicionar.modal.mensal = false
     },
     async salvarMensal (gasto) {
       await mensaisStore.setItem(gasto.id, gasto)
+      this.editar.modal.mensal = false
       this.carregarGastos(true)
     },
     deletarMensal (gastoId) {
@@ -132,6 +150,7 @@ export default {
       this.$store.dispatch('gastos/addCartao', {
         gasto: Object.assign(gasto, this.data)
       })
+      this.adicionar.modal.cartao = false
     },
     async editarUnico (gastoId) {
       this.editar.gasto.unico = await unicosStore.getItem(gastoId)
@@ -198,11 +217,12 @@ export default {
   },
   components: {
     contaList,
+    btnAddConta,
     modalAddGastoUnico,
     modalEditGastoUnico,
-    btnAddConta,
     modalAddGastoMensal,
-    modalEditGastoMensal
+    modalEditGastoMensal,
+    modalAddGastoCartao
   }
 }
 </script>

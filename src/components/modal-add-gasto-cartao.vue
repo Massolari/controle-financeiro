@@ -59,8 +59,8 @@ export default {
     }
   },
   computed: {
-    dias () {
-      return this.$store.state.cartoes.cartoes
+    cartoes () {
+      return this.$store.state.cartoes.cartoes.map(c => ({ label: c.nome, value: c.id }))
     }
   },
   watch: {
@@ -90,7 +90,7 @@ export default {
       this.$v.gasto.$touch()
       if (this.$v.gasto.$error) {
         this.$q.notify({
-          message: 'Descrição, valor e cartão devem estar preenchidos!',
+          message: 'Descrição e valor devem estar preenchidos!',
           position: 'top'
         })
         return

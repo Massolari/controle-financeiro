@@ -1,6 +1,7 @@
 <template>
   <q-dialog
-    v-model="myShow"
+    v-model="show"
+    @hide="close"
     prevent-close
     >
       <span slot="title">Editar gasto único</span>
@@ -30,7 +31,7 @@
       </div>
 
       <template slot="buttons" slot-scope="props">
-        <q-btn flat label="Cancelar" @click="cancel" />
+        <q-btn flat label="Cancelar" @click="close" />
         <q-btn color="secondary" label="Salvar" @click="salvar" />
       </template>
     </q-dialog>
@@ -40,10 +41,9 @@
 import { required, minValue } from 'vuelidate/lib/validators'
 
 export default {
-  props: ['show', 'gasto'],
+  props: ['show', 'close', 'gasto'],
   data () {
     return {
-      myShow: false,
       myGasto: {
         id: '',
         desc: '',
@@ -52,16 +52,6 @@ export default {
     }
   },
   watch: {
-    show (newValue, oldValue) {
-      this.myShow = newValue
-    },
-    myShow (newValue, oldValue) {
-      if (newValue) {
-        this.$emit('open')
-      } else {
-        this.$emit('close')
-      }
-    },
     gasto (newValue) {
       if (newValue) {
         this.myGasto = newValue
@@ -88,10 +78,6 @@ export default {
         return
       }
       this.$emit('salvar', Object.assign({}, this.myGasto))
-      this.myShow = false
-    },
-    cancel () {
-      this.myShow = false
     }
   }
 }
