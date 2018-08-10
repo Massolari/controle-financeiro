@@ -40,7 +40,7 @@
       :show="editar.modal.mensal"
       :gasto="editar.gasto.mensal"
       @salvar="salvarMensal"
-      @close="() => editar.modal.mensal = false"
+      :close="() => editar.modal.mensal = false"
     ></modal-edit-gasto-mensal>
 
     <modal-add-gasto-cartao
