@@ -95,6 +95,10 @@ export default {
     }
   },
   methods: {
+    abrirMenu () {
+      this.menuAberto = true
+      console.log(this.menuAberto)
+    },
     inserirUnico () {
       this.adicionar.modal.unico = true
     },

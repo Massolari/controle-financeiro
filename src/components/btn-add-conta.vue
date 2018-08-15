@@ -1,25 +1,23 @@
 <template>
-  <q-fab
-    class="fixed"
-    style="right: 18px; bottom: 18px"
-    color="primary"
-    direction="up"
-    icon="add"
-    @show="showTooltips"
-    @hide="hideTooltips"
-    >
+  <q-layout>
+    <q-btn
+      round
+      color="primary"
+      @click="open"
+      class="fixed"
+      icon="add"
+      style="right: 18px; bottom: 18px"
+      size="lg"
+    />
 
-    <q-fab-action @click="addCartao" color="red" icon="credit_card">
-      <q-tooltip :value="tooltips" anchor="center left" self="center right" :offset="[20, 20]">Gasto no cartão</q-tooltip>
-    </q-fab-action>
-    <q-fab-action @click="addMensal" color="purple" icon="calendar_today">
-      <q-tooltip :value="tooltips" anchor="center left" self="center right" :offset="[20, 0]">Gasto mensal</q-tooltip>
-    </q-fab-action>
-    <q-fab-action @click="addUnico" color="secondary" icon="attach_money">
-      <q-tooltip ref="ttpUnico" :value="tooltips" anchor="center left" self="center right" :offset="[20, 0]">Gasto único</q-tooltip>
-    </q-fab-action>
-  </q-fab>
-
+    <q-action-sheet
+      v-model="opened"
+      title="Novo gasto..."
+      :grid="true"
+      :actions="menu"
+      @hide="() => opened = false"
+    />
+  </q-layout>
 </template>
 
 <script>
@@ -27,22 +25,32 @@ export default {
   name: 'BtnAddConta',
   data () {
     return {
-      tooltips: false,
-      opened: false
+      opened: false,
+      menu: [
+        {
+          label: 'Unico',
+          icon: 'attach_money',
+          color: 'secondary',
+          handler: this.addUnico
+        },
+        {
+          label: 'Mensal',
+          icon: 'calendar_today',
+          color: 'purple',
+          handler: this.addMensal
+        },
+        {
+          label: 'No cartão',
+          icon: 'credit_card',
+          color: 'red',
+          handler: this.addCartao
+        }
+      ]
     }
   },
   methods: {
-    showTooltips () {
+    open () {
       this.opened = true
-      setTimeout(() => {
-        if (this.opened) {
-          this.tooltips = true
-        }
-      }, 500)
-    },
-    hideTooltips () {
-      this.opened = false
-      this.tooltips = false
     },
     addUnico () {
       this.$emit('addUnico')
