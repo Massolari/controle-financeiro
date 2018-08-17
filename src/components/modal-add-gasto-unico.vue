@@ -1,13 +1,13 @@
 <template>
-  <q-dialog
-    v-model="show"
+  <q-modal
+    :value="show"
     @hide="close"
     @show="limparCampos"
-    prevent-close
+    maximized
     >
-      <span slot="title">Adicionar gasto único</span>
+      <span>Adicionar gasto único</span>
 
-      <div slot="body">
+      <div>
         <q-field class="distance">
           <q-input
             v-model="conta.desc"
@@ -31,11 +31,9 @@
         </q-field>
       </div>
 
-      <template slot="buttons" slot-scope="props">
-        <q-btn flat label="Cancelar" @click="close" />
-        <q-btn color="primary" label="Adicionar" @click="adicionar" />
-      </template>
-    </q-dialog>
+      <q-btn flat label="Cancelar" @click="close" />
+      <q-btn color="primary" label="Adicionar" @click="adicionar" />
+    </q-modal>
 </template>
 
 <script>

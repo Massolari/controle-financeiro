@@ -66,7 +66,8 @@ module.exports = function (ctx) {
         'QField',
         'QInput',
         'QSelect',
-        'QActionSheet'
+        'QActionSheet',
+        'QModal'
       ],
       directives: [
         'Ripple'
