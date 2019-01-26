@@ -68,7 +68,7 @@ import modalEditGastoMensal from '../components/modal-edit-gasto-mensal'
 import modalAddGastoCartao from '../components/modal-add-gasto-cartao'
 import modalEditGastoCartao from '../components/modal-edit-gasto-cartao'
 import btnAddConta from '../components/btn-add-conta'
-import { unicosStore, mensaisStore, cartaoStore } from '../persistence/gastos'
+import { mensaisStore, cartaoStore } from '../persistence/gastos'
 
 export default {
   name: 'PageIndex',
@@ -125,9 +125,7 @@ export default {
       this.adicionar.modal.cartao = true
     },
     addUnico (gasto) {
-      this.$store.dispatch('gastos/addUnico', {
-        gasto: Object.assign(gasto, this.data)
-      }).then(() => {
+      this.$store.dispatch('gastos/addUnico', Object.assign(gasto, this.data)).then(() => {
         this.$q.notify({
           message: 'Gasto único incluído com sucesso!',
           color: 'positive',
@@ -137,13 +135,16 @@ export default {
       this.adicionar.modal.unico = false
     },
     async salvarUnico (gasto) {
-      await unicosStore.setItem(gasto.id, gasto)
+      await this.$store.dispatch('gastos/updateUnico', Object.assign(gasto, this.data))
       this.editar.modal.unico = false
       this.carregarGastos()
     },
     deletarUnico (gastoId) {
       this.confirmarDeletar().then(async () => {
-        await unicosStore.removeItem(gastoId)
+        await this.$store.dispatch('gastos/deleteUnico', {
+          gastoId,
+          data: this.data
+        })
         this.carregarGastos()
       }).catch(() => {})
     },
@@ -176,13 +177,11 @@ export default {
       }).catch(() => {})
     },
     addCartao (gasto) {
-      this.$store.dispatch('gastos/addCartao', {
-        gasto: Object.assign(gasto, this.data)
-      })
+      this.$store.dispatch('gastos/addCartao', Object.assign(gasto, this.data))
       this.adicionar.modal.cartao = false
     },
     async editarUnico (gastoId) {
-      this.editar.gasto.unico = await unicosStore.getItem(gastoId)
+      this.editar.gasto.unico = this.$store.state.gastos.unicos.find(g => g.id === gastoId)
       this.editar.modal.unico = true
     },
     async editarMensal (gastoId) {
@@ -216,18 +215,18 @@ export default {
       if (this.data.mes === 1) {
         this.data.ano--
         this.data.mes = 12
-        return
+      } else {
+        this.data.mes--
       }
-      this.data.mes--
       this.carregarGastos()
     },
     proximo () {
       if (this.data.mes === 12) {
         this.data.ano++
         this.data.mes = 1
-        return
+      } else {
+        this.data.mes++
       }
-      this.data.mes++
       this.carregarGastos()
     },
     async carregarGastos (force = false) {

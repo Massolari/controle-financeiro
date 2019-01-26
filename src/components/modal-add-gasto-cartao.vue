@@ -22,9 +22,26 @@
             :decimals="2"
             :step="1.4"
             prefix="R$ "
-            float-label="Valor"
+            float-label="Valor da parcela"
             :error="$v.gasto.valor.$error"
             @blur="$v.gasto.valor.$touch"
+          />
+        </q-field>
+        <q-field class="distance">
+          <q-input
+            v-model="gasto.parcelas"
+            type="number"
+            float-label="Parcelas"
+            :error="$v.gasto.parcelas.$error"
+            @blur="$v.gasto.parcelas.$touch"
+          />
+        </q-field>
+        <q-field class="distance">
+          <q-input
+            :value="total"
+            float-label="Valor total"
+            prefix="R$ "
+            :disable="true"
           />
         </q-field>
         <q-field class="distance">
@@ -54,6 +71,7 @@ export default {
       gasto: {
         desc: '',
         valor: 0,
+        parcelas: 1,
         vencimento: 1
       }
     }
@@ -61,6 +79,9 @@ export default {
   computed: {
     cartoes () {
       return this.$store.state.cartoes.cartoes.map(c => ({ label: c.nome, value: c.id }))
+    },
+    total () {
+      return (this.gasto.valor * this.gasto.parcelas) || 0
     }
   },
   watch: {
@@ -79,6 +100,10 @@ export default {
   validations: {
     gasto: {
       desc: { required },
+      parcelas: {
+        required,
+        minValue: minValue(1)
+      },
       valor: {
         required,
         minValue: minValue(0.01)
