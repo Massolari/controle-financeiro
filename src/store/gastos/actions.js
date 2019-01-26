@@ -7,12 +7,9 @@ import { unicosStore, mensaisStore, cartaoStore } from '../../persistence/gastos
 
 export const carregar = ({ state }, { data, force }) => {
   state.unicos = []
+  console.log(data)
   return Promise.all([
-    unicosStore.iterate((gasto) => {
-      if (gasto.mes === data.mes && gasto.ano === data.ano) {
-        state.unicos.push(gasto)
-      }
-    }),
+    unicosStore.getItem(`${data.ano}-${data.mes}`),
     new Promise((resolve) => {
       if (!force && state.mensais.length > 0) {
         resolve()
@@ -35,10 +32,13 @@ export const carregar = ({ state }, { data, force }) => {
         }
       }).then(() => resolve())
     })
-  ])
+  ]).then(([unicos]) => {
+    console.log(unicos)
+    state.unicos = unicos || []
+  })
 }
 
-export const addUnico = ({ commit }, payload) => {
+export const addUnico = async ({ commit }, payload) => {
   payload.gasto.id = uuid()
   const gasto = payload.gasto
   return new Promise(resolve => {
