@@ -3,14 +3,14 @@
     :value="show"
     prevent-close
     >
-      <span slot="title">Editar gasto mensal</span>
+      <span slot="title">Editar gasto no cartão</span>
 
       <div slot="body">
         <q-field class="distance">
           <q-input
             v-model="myGasto.desc"
             float-label="Descrição"
-            placeholder="Ex.: Conta de luz"
+            placeholder="Ex.: Geladeira"
             :error="$v.myGasto.desc.$error"
             @blur="$v.myGasto.desc.$touch"
           />
@@ -29,9 +29,9 @@
         </q-field>
         <q-field class="distance">
           <q-select
-            float-label="Vencimento"
-            v-model="myGasto.vencimento"
-            :options="dias"
+            float-label="Cartão"
+            v-model="myGasto.cartao"
+            :options="cartoes"
           />
         </q-field>
       </div>
@@ -58,8 +58,8 @@ export default {
     }
   },
   computed: {
-    dias () {
-      return this.$store.state.util.dias
+    cartoes () {
+      return this.$store.state.cartoes.cartoes.map(c => ({ label: c.nome, value: c.id }))
     }
   },
   watch: {

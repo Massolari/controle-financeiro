@@ -1,8 +1,7 @@
 <template>
   <q-dialog
-    v-model="show"
+    :value="show"
     @show="limparCampos"
-    @hide="close"
     prevent-close
     >
       <span slot="title">Adicionar gasto mensal</span>
@@ -49,7 +48,7 @@
 import { required, minValue } from 'vuelidate/lib/validators'
 
 export default {
-  props: ['show', 'close'],
+  props: ['show'],
   data () {
     return {
       conta: {
@@ -90,6 +89,9 @@ export default {
       this.conta.valor = ''
       this.conta.vencimento = 1
       this.$v.conta.$reset()
+    },
+    close () {
+      this.$emit('close')
     }
   }
 }

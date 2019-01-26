@@ -8,8 +8,11 @@ import { cartoesStore } from '../../persistence/cartoes'
 export const add = ({ commit }, payload) => {
   payload.cartao.id = uuid()
   const cartao = payload.cartao
-  cartoesStore.setItem(cartao.id, cartao).then(() => {
-    commit('ADD_CARTAO', cartao)
+  return new Promise(resolve => {
+    cartoesStore.setItem(cartao.id, cartao).then(() => {
+      commit('ADD_CARTAO', cartao)
+      resolve()
+    })
   })
 }
 

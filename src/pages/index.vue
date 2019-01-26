@@ -1,5 +1,5 @@
 <template>
-  <q-page padding>
+  <q-page>
     <conta-list
       :data="data"
       @anterior="anterior"
@@ -9,6 +9,7 @@
       @editarMensal="editarMensal"
       @deletarMensal="deletarMensal"
       @editarCartao="editarCartao"
+      @deletarCartao="deletarCartao"
     ></conta-list>
 
     <btn-add-conta
@@ -20,27 +21,27 @@
     <modal-add-gasto-unico
       :show="adicionar.modal.unico"
       @salvar="addUnico"
-      :close="() => adicionar.modal.unico = false"
+      @close="() => adicionar.modal.unico = false"
     ></modal-add-gasto-unico>
 
     <modal-edit-gasto-unico
       :show="editar.modal.unico"
       :gasto="editar.gasto.unico"
       @salvar="salvarUnico"
-      :close="() => editar.modal.unico = false"
+      @close="() => editar.modal.unico = false"
     ></modal-edit-gasto-unico>
 
     <modal-add-gasto-mensal
       :show="adicionar.modal.mensal"
       @salvar="addMensal"
-      :close="() => adicionar.modal.mensal = false"
+      @close="() => adicionar.modal.mensal = false"
     ></modal-add-gasto-mensal>
 
     <modal-edit-gasto-mensal
       :show="editar.modal.mensal"
       :gasto="editar.gasto.mensal"
       @salvar="salvarMensal"
-      :close="() => editar.modal.mensal = false"
+      @close="() => editar.modal.mensal = false"
     ></modal-edit-gasto-mensal>
 
     <modal-add-gasto-cartao
@@ -49,6 +50,12 @@
       @close="() => adicionar.modal.cartao = false"
     ></modal-add-gasto-cartao>
 
+    <modal-edit-gasto-cartao
+      :show="editar.modal.cartao"
+      :gasto="editar.gasto.cartao"
+      @salvar="salvarCartao"
+      @close="() => editar.modal.cartao = false"
+    ></modal-edit-gasto-cartao>
   </q-page>
 </template>
 
@@ -59,8 +66,9 @@ import modalEditGastoUnico from '../components/modal-edit-gasto-unico'
 import modalAddGastoMensal from '../components/modal-add-gasto-mensal'
 import modalEditGastoMensal from '../components/modal-edit-gasto-mensal'
 import modalAddGastoCartao from '../components/modal-add-gasto-cartao'
+import modalEditGastoCartao from '../components/modal-edit-gasto-cartao'
 import btnAddConta from '../components/btn-add-conta'
-import { unicosStore, mensaisStore } from '../persistence/gastos'
+import { unicosStore, mensaisStore, cartaoStore } from '../persistence/gastos'
 
 export default {
   name: 'PageIndex',
@@ -119,6 +127,12 @@ export default {
     addUnico (gasto) {
       this.$store.dispatch('gastos/addUnico', {
         gasto: Object.assign(gasto, this.data)
+      }).then(() => {
+        this.$q.notify({
+          message: 'Gasto único incluído com sucesso!',
+          color: 'positive',
+          position: 'top-right'
+        })
       })
       this.adicionar.modal.unico = false
     },
@@ -144,6 +158,17 @@ export default {
       this.editar.modal.mensal = false
       this.carregarGastos(true)
     },
+    deletarCartao (gastoId) {
+      this.confirmarDeletar().then(async () => {
+        await cartaoStore.removeItem(gastoId)
+        this.carregarGastos(true)
+      }).catch(() => {})
+    },
+    async salvarCartao (gasto) {
+      await cartaoStore.setItem(gasto.id, gasto)
+      this.editar.modal.cartao = false
+      this.carregarGastos(true)
+    },
     deletarMensal (gastoId) {
       this.confirmarDeletar().then(async () => {
         await mensaisStore.removeItem(gastoId)
@@ -164,8 +189,16 @@ export default {
       this.editar.gasto.mensal = await mensaisStore.getItem(gastoId)
       this.editar.modal.mensal = true
     },
-    editarCartao (gasto) {
-      this.editar.gasto = gasto
+    async editarCartao (gastoId) {
+      this.carregarCartoes()
+      if (this.$store.state.cartoes.cartoes.length === 0) {
+        this.$q.dialog({
+          title: 'Atenção!',
+          message: 'Primeiro você deve cadastrar um cartão!'
+        })
+        return
+      }
+      this.editar.gasto.cartao = await cartaoStore.getItem(gastoId)
       this.editar.modal.cartao = true
     },
     confirmarDeletar () {
@@ -226,7 +259,8 @@ export default {
     modalEditGastoUnico,
     modalAddGastoMensal,
     modalEditGastoMensal,
-    modalAddGastoCartao
+    modalAddGastoCartao,
+    modalEditGastoCartao
   }
 }
 </script>

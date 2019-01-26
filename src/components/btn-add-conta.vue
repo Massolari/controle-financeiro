@@ -1,5 +1,5 @@
 <template>
-  <q-layout>
+  <div>
     <q-btn
       round
       color="primary"
@@ -17,7 +17,7 @@
       :actions="menu"
       @hide="() => opened = false"
     />
-  </q-layout>
+  </div>
 </template>
 
 <script>

@@ -1,6 +1,6 @@
 <template>
   <q-dialog
-    v-model="show"
+    :value="show"
     @hide="close"
     prevent-close
     >
@@ -41,7 +41,7 @@
 import { required, minValue } from 'vuelidate/lib/validators'
 
 export default {
-  props: ['show', 'close', 'gasto'],
+  props: ['show', 'gasto'],
   data () {
     return {
       myGasto: {
@@ -78,6 +78,9 @@ export default {
         return
       }
       this.$emit('salvar', Object.assign({}, this.myGasto))
+    },
+    close () {
+      this.$emit('close')
     }
   }
 }

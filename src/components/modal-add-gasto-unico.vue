@@ -1,13 +1,12 @@
 <template>
-  <q-modal
+  <q-dialog
     :value="show"
-    @hide="close"
     @show="limparCampos"
-    maximized
+    prevent-close
     >
-      <span>Adicionar gasto único</span>
+      <span slot="title">Adicionar gasto único</span>
 
-      <div>
+      <div slot="body">
         <q-field class="distance">
           <q-input
             v-model="conta.desc"
@@ -31,16 +30,18 @@
         </q-field>
       </div>
 
-      <q-btn flat label="Cancelar" @click="close" />
-      <q-btn color="primary" label="Adicionar" @click="adicionar" />
-    </q-modal>
+      <template slot="buttons" slot-scope="props">
+        <q-btn flat label="Cancelar" @click="close" />
+        <q-btn color="primary" label="Adicionar" @click="adicionar" />
+      </template>
+    </q-dialog>
 </template>
 
 <script>
 import { required, minValue } from 'vuelidate/lib/validators'
 
 export default {
-  props: ['show', 'close'],
+  props: ['show'],
   data () {
     return {
       conta: {
@@ -74,6 +75,9 @@ export default {
       this.conta.desc = ''
       this.conta.valor = ''
       this.$v.conta.$reset()
+    },
+    close () {
+      this.$emit('close')
     }
   }
 }

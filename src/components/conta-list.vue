@@ -32,7 +32,10 @@
         @editar="editarMensal"
     ></list-gastos-mensais>
     <q-item-separator></q-item-separator>
-    <list-gastos-cartao></list-gastos-cartao>
+    <list-gastos-cartao
+        @deletar="deletarCartao"
+        @editar="editarCartao"
+    ></list-gastos-cartao>
     <q-item-separator></q-item-separator>
     <q-item>
       <q-item-main :label="toMoney(total)" sublabel="Total"></q-item-main>
@@ -66,8 +69,11 @@ export default {
     deletarMensal (gastoId) {
       this.$emit('deletarMensal', gastoId)
     },
-    editarCartao (gasto) {
-      this.$emit('editarCartao', gasto)
+    editarCartao (gastoId) {
+      this.$emit('editarCartao', gastoId)
+    },
+    deletarCartao (gastoId) {
+      this.$emit('deletarCartao', gastoId)
     },
     anterior () {
       this.$emit('anterior')

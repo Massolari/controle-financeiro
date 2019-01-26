@@ -41,23 +41,32 @@ export const carregar = ({ state }, { data, force }) => {
 export const addUnico = ({ commit }, payload) => {
   payload.gasto.id = uuid()
   const gasto = payload.gasto
-  unicosStore.setItem(gasto.id, gasto).then(() => {
-    commit('ADD_UNICO', gasto)
+  return new Promise(resolve => {
+    unicosStore.setItem(gasto.id, gasto).then(() => {
+      commit('ADD_UNICO', gasto)
+      resolve()
+    })
   })
 }
 
 export const addMensal = ({ commit }, payload) => {
   payload.gasto.id = uuid()
   const gasto = payload.gasto
-  mensaisStore.setItem(gasto.id, gasto).then(() => {
-    commit('ADD_MENSAL', gasto)
+  return new Promise(resolve => {
+    mensaisStore.setItem(gasto.id, gasto).then(() => {
+      commit('ADD_MENSAL', gasto)
+      resolve()
+    })
   })
 }
 
 export const addCartao = ({ commit }, payload) => {
   payload.gasto.id = uuid()
   const gasto = payload.gasto
-  cartaoStore.setItem(gasto.id, gasto).then(() => {
-    commit('ADD_CARTAO', gasto)
+  return new Promise(resolve => {
+    cartaoStore.setItem(gasto.id, gasto).then(() => {
+      commit('ADD_CARTAO', gasto)
+      resolve()
+    })
   })
 }
