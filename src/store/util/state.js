@@ -124,5 +124,9 @@ export default {
       label: '31',
       value: 31
     }
-  ]
+  ],
+  data: {
+    mes: (new Date()).getMonth() + 1,
+    ano: (new Date()).getFullYear()
+  }
 }

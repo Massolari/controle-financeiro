@@ -77,10 +77,10 @@ export default {
   },
   data () {
     return {
-      data: {
-        mes: (new Date()).getMonth() + 1,
-        ano: (new Date()).getFullYear()
-      },
+      // data: {
+      //   mes: (new Date()).getMonth() + 1,
+      //   ano: (new Date()).getFullYear()
+      // },
       adicionar: {
         modal: {
           unico: false,
@@ -102,6 +102,11 @@ export default {
       }
     }
   },
+  computed: {
+    data () {
+      return this.$store.getters['util/dataAtual']
+    }
+  },
   methods: {
     abrirMenu () {
       this.menuAberto = true
@@ -113,8 +118,8 @@ export default {
     inserirMensal () {
       this.adicionar.modal.mensal = true
     },
-    inserirCartao () {
-      this.carregarCartoes()
+    async inserirCartao () {
+      await this.carregarCartoes()
       if (this.$store.state.cartoes.cartoes.length === 0) {
         this.$q.dialog({
           title: 'Atenção!',
@@ -149,9 +154,7 @@ export default {
       }).catch(() => {})
     },
     addMensal (gasto) {
-      this.$store.dispatch('gastos/addMensal', {
-        gasto
-      })
+      this.$store.dispatch('gastos/addMensal', gasto)
       this.adicionar.modal.mensal = false
     },
     async salvarMensal (gasto) {
@@ -189,7 +192,7 @@ export default {
       this.editar.modal.mensal = true
     },
     async editarCartao (gastoId) {
-      this.carregarCartoes()
+      await this.carregarCartoes()
       if (this.$store.state.cartoes.cartoes.length === 0) {
         this.$q.dialog({
           title: 'Atenção!',
@@ -211,22 +214,12 @@ export default {
         cancel: 'Cancelar'
       })
     },
-    anterior () {
-      if (this.data.mes === 1) {
-        this.data.ano--
-        this.data.mes = 12
-      } else {
-        this.data.mes--
-      }
+    async anterior () {
+      await this.$store.dispatch('util/mesAnterior')
       this.carregarGastos()
     },
-    proximo () {
-      if (this.data.mes === 12) {
-        this.data.ano++
-        this.data.mes = 1
-      } else {
-        this.data.mes++
-      }
+    async proximo () {
+      await this.$store.dispatch('util/mesSeguinte')
       this.carregarGastos()
     },
     async carregarGastos (force = false) {
@@ -241,14 +234,15 @@ export default {
       this.$q.loading.hide()
     },
     async carregarCartoes (force = false) {
-      this.$q.loading.show({
-        delay: 0,
-        message: 'Carregando cartões...'
+      return new Promise(async (resolve) => {
+        this.$q.loading.show({
+          delay: 0,
+          message: 'Carregando cartões...'
+        })
+        await this.$store.dispatch('cartoes/carregar', force)
+        this.$q.loading.hide()
+        resolve()
       })
-      await this.$store.dispatch('cartoes/carregar', {
-        force
-      })
-      this.$q.loading.hide()
     }
   },
   components: {

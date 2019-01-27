@@ -16,10 +16,10 @@ export const add = ({ commit }, payload) => {
   })
 }
 
-export const carregar = ({ state }, payload) => {
-  if (!payload.force && state.cartoes.length > 0) return
+export const carregar = ({ state }, force) => {
+  if (!force && state.cartoes.length > 0) return
   state.cartoes = []
-  cartoesStore.iterate((cartao) => {
+  return cartoesStore.iterate((cartao) => {
     state.cartoes.push(cartao)
   })
 }

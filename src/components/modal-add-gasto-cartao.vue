@@ -7,6 +7,22 @@
 
       <div slot="body">
         <q-field class="distance">
+          <q-select
+            float-label="Cartão"
+            v-model="gasto.cartao"
+            :options="cartoes"
+            @input="calcularLimite"
+          />
+        </q-field>
+        <q-field class="distance">
+          <q-input
+            :value="limiteCartao"
+            float-label="Limite disponível"
+            prefix="R$ "
+            :disable="true"
+          />
+        </q-field>
+        <q-field class="distance">
           <q-input
             v-model="gasto.desc"
             float-label="Descrição"
@@ -44,13 +60,6 @@
             :disable="true"
           />
         </q-field>
-        <q-field class="distance">
-          <q-select
-            float-label="Cartão"
-            v-model="gasto.cartao"
-            :options="cartoes"
-          />
-        </q-field>
       </div>
 
       <template slot="buttons" slot-scope="props">
@@ -72,14 +81,17 @@ export default {
         desc: '',
         valor: 0,
         parcelas: 1,
-        vencimento: 1
-      }
+        vencimento: 1,
+        cartao: {
+          id: 0,
+          label: 'Selecione'
+        }
+      },
+      cartoes: [],
+      limiteCartao: 0
     }
   },
   computed: {
-    cartoes () {
-      return this.$store.state.cartoes.cartoes.map(c => ({ label: c.nome, value: c.id }))
-    },
     total () {
       return (this.gasto.valor * this.gasto.parcelas) || 0
     }
@@ -87,6 +99,10 @@ export default {
   watch: {
     show (newValue, oldValue) {
       this.limparCampos()
+      if (newValue) {
+        this.cartoes = this.$store.state.cartoes.cartoes.map(c => ({ label: c.nome, value: c.id }))
+        console.log('cartoes: ', this.cartoes)
+      }
       this.myShow = newValue
     },
     myShow (newValue, oldValue) {
@@ -122,6 +138,19 @@ export default {
       }
       this.$emit('salvar', Object.assign({}, this.gasto))
       this.myShow = false
+    },
+    calcularLimite () {
+      console.log('cartao: ', this.gasto.cartao)
+      if (!this.gasto.cartao) {
+        this.limiteCartao = 0
+      }
+      this.$store.getters['cartoes/limiteDisponivel']({
+        cartao: this.$store.state.cartoes.cartoes.find(c => c.id === this.gasto.cartao),
+        data: this.$store.getters['util/dataAtual']
+      }).then(limite => {
+        console.log(limite)
+        this.limiteCartao = limite
+      })
     },
     cancel () {
       this.myShow = false
