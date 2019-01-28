@@ -3,7 +3,7 @@
       <q-item>
           <q-item-side left>
               <q-btn
-                  icon="arrow_back_ios"
+                  icon="fa fa-arrow-left"
                   round
                   outline
                   size="sm"
@@ -13,7 +13,7 @@
               <q-item-main>Gastos no mês de {{ mesAtual }} de {{ data.ano }}</q-item-main>
           <q-item-side right>
               <q-btn
-                  icon="arrow_forward_ios"
+                  icon="fa fa-arrow-right"
                   round
                   outline
                   size="sm"
