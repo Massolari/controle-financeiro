@@ -1,7 +1,7 @@
 <template>
     <q-collapsible opened icon="credit_card" :label="`Gastos no cartão (${toMoney(totalCartao)})`">
       <q-item :key="c.id" v-for="c in cartao">
-        <q-item-main :label="toMoney(c.valor)" :sublabel="c.desc"/>
+        <q-item-main :label="toMoney(c.valor)" :sublabel="montarDescricao(c)"/>
         <q-item-side right>
           <q-btn
               icon="delete"
@@ -34,6 +34,26 @@ export default {
     toMoney (value) {
       return this.$store.getters['util/toMoney'](value)
     },
+    calcularParcelaAtual (gasto) {
+      let ano = gasto.ano
+      let mes = gasto.mes
+      let parcela
+      for (parcela = 1; parcela <= gasto.parcelas; parcela++) {
+        if (ano === this.data.ano && mes === this.data.mes) {
+          break
+        }
+        if (mes === 12) {
+          ano++
+          mes = 1
+        } else {
+          mes++
+        }
+      }
+      return parcela
+    },
+    montarDescricao (gasto) {
+      return `${gasto.desc} (${this.calcularParcelaAtual(gasto)}/${gasto.parcelas})`
+    },
     editar (id) {
       this.$emit('editar', id)
     },
@@ -42,6 +62,9 @@ export default {
     }
   },
   computed: {
+    data () {
+      return this.$store.getters['util/dataAtual']
+    },
     cartao () {
       return this.$store.state.gastos.cartao
     },

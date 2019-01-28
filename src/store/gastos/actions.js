@@ -7,7 +7,7 @@ import { unicosStore, mensaisStore, cartaoStore } from '../../persistence/gastos
 
 export const carregar = ({ state }, { data, force }) => {
   state.unicos = []
-  console.log(data)
+  state.cartao = []
   return Promise.all([
     unicosStore.getItem(`${data.ano}-${data.mes}`),
     new Promise((resolve) => {
@@ -20,22 +20,10 @@ export const carregar = ({ state }, { data, force }) => {
         state.mensais.push(gasto)
       }).then(() => resolve())
     }),
-    new Promise(resolve => {
-      if (!force && state.cartao.length > 0) {
-        resolve()
-        return
-      }
-      state.cartao = []
-      cartaoStore.iterate((gasto) => {
-        if (gasto.mes === data.mes && gasto.ano === data.ano) {
-          state.cartao.push(gasto)
-        }
-      }).then(() => resolve())
-    })
-  ]).then(([unicos]) => {
-    console.log(unicos)
+    cartaoStore.getItem(`${data.ano}-${data.mes}`)
+  ]).then(([unicos, mensais, cartao]) => {
     state.unicos = unicos || []
-    console.log(state.unicos)
+    state.cartao = cartao || []
   })
 }
 
@@ -86,10 +74,25 @@ export const addMensal = ({ commit }, gasto) => {
 
 export const addCartao = ({ commit }, gasto) => {
   gasto.id = uuid()
-  return new Promise(resolve => {
-    cartaoStore.setItem(gasto.id, gasto).then(() => {
-      commit('ADD_CARTAO', gasto)
-      resolve()
-    })
+  let ano = gasto.ano
+  let mes = gasto.mes
+  return new Promise(async (resolve) => {
+    for (let i = 1; i <= gasto.parcelas; i++) {
+      const id = `${ano}-${mes}`
+      let gastos = await cartaoStore.getItem(id)
+      if (!gastos) {
+        gastos = []
+      }
+      gastos.push(gasto)
+      await cartaoStore.setItem(id, gastos)
+      if (mes === 12) {
+        ano++
+        mes = 1
+      } else {
+        mes++
+      }
+    }
+    commit('ADD_CARTAO', gasto)
+    resolve()
   })
 }

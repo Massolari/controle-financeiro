@@ -159,6 +159,8 @@ export default {
       this.gasto.desc = ''
       this.gasto.valor = ''
       this.gasto.cartao = ''
+      this.gasto.parcelas = 1
+      this.gasto.limiteCartao = 0
       this.$v.gasto.$reset()
     }
   }

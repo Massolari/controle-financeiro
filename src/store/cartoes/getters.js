@@ -10,7 +10,7 @@ export const limiteDisponivel = () => async (payload) => {
     gastos = []
   }
   const valorGasto = gastos.reduce((acc, g) => {
-    if (g.cartao.id === payload.cartao.limite) {
+    if (g.cartao === payload.cartao.id) {
       acc += g.valor * g.parcelas
     }
     return acc
