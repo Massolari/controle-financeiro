@@ -171,7 +171,6 @@ export default {
     },
     validarAno () {
       const anoString = String(this.gasto.ano)
-      console.log(anoString)
       if (anoString.length > 4 || isNaN(anoString)) {
         Vue.nextTick(() => {
           const tratado = parseInt(anoString.substr(0, 4))
@@ -181,7 +180,6 @@ export default {
       }
     },
     calcularLimite () {
-      console.log('cartao: ', this.gasto.cartao)
       if (!this.gasto.cartao) {
         this.limiteCartao = 0
       }
@@ -189,7 +187,6 @@ export default {
         cartao: this.cartaoSelecionado,
         data: this.$store.state.util.data
       }).then(limite => {
-        console.log(limite)
         this.limiteCartao = limite
       })
     },

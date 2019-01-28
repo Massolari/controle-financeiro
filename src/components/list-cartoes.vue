@@ -3,7 +3,7 @@
         <q-list-header>Cartões</q-list-header>
         <q-item :key="c.id" v-for="c in cartoes">
             <q-item-side left icon="credit_card" />
-            <q-item-main :label="`${c.nome}`" :sublabel="`Limite disponível: ${toMoney(c.limite)}`"/>
+            <q-item-main :label="`${c.nome}`" :sublabel="`Limite disponível: ${calcularLimite(c)}`"/>
             <q-item-side right>
               <q-btn
                   icon="delete"
@@ -44,6 +44,19 @@ export default {
     }
   },
   computed: {
+    calcularLimite () {
+      return (cartao) => {
+        let limite = 0
+        this.$store.getters['cartoes/limiteDisponivel']({
+          cartao,
+          data: this.$store.state.util.data
+        }).then(l => {
+          limite = l
+        })
+        console.log(limite)
+        return this.toMoney(limite)
+      }
+    },
     cartoes () {
       return this.$store.state.cartoes.cartoes
     }
