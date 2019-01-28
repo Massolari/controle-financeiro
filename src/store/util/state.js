@@ -125,6 +125,56 @@ export default {
       value: 31
     }
   ],
+  meses: [
+    {
+      label: 'janeiro',
+      value: 1
+    },
+    {
+      label: 'fevereiro',
+      value: 2
+    },
+    {
+      label: 'março',
+      value: 3
+    },
+    {
+      label: 'abril',
+      value: 4
+    },
+    {
+      label: 'maio',
+      value: 5
+    },
+    {
+      label: 'junho',
+      value: 6
+    },
+    {
+      label: 'julho',
+      value: 7
+    },
+    {
+      label: 'agosto',
+      value: 8
+    },
+    {
+      label: 'setembro',
+      value: 9
+    },
+    {
+      label: 'outubro',
+      value: 10
+    },
+    {
+      label: 'novembro',
+      value: 11
+    },
+    {
+      label: 'dezembro',
+      value: 12
+    }
+  ],
   data: {
     mes: (new Date()).getMonth() + 1,
     ano: (new Date()).getFullYear()

@@ -92,7 +92,33 @@ export const addCartao = ({ commit }, gasto) => {
         mes++
       }
     }
-    commit('ADD_CARTAO', gasto)
     resolve()
   })
+}
+
+export const deleteCartao = ({ commit }, gasto) => {
+  let ano = gasto.ano
+  let mes = gasto.mes
+  return new Promise(async (resolve) => {
+    for (let i = 1; i <= gasto.parcelas; i++) {
+      const id = `${ano}-${mes}`
+      let gastos = await cartaoStore.getItem(id)
+      const deleteIndex = gastos.find(g => g.id === gasto.id)
+      gastos.splice(deleteIndex, 1)
+      await cartaoStore.setItem(id, gastos)
+      if (mes === 12) {
+        ano++
+        mes = 1
+      } else {
+        mes++
+      }
+    }
+    resolve()
+  })
+}
+
+export const updateCartao = async ({ commit }, gastos) => {
+  console.log(gastos)
+  await deleteCartao({ commit }, gastos.antigo)
+  await addCartao({ commit }, gastos.novo)
 }

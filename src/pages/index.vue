@@ -68,7 +68,7 @@ import modalEditGastoMensal from '../components/modal-edit-gasto-mensal'
 import modalAddGastoCartao from '../components/modal-add-gasto-cartao'
 import modalEditGastoCartao from '../components/modal-edit-gasto-cartao'
 import btnAddConta from '../components/btn-add-conta'
-import { mensaisStore, cartaoStore } from '../persistence/gastos'
+import { mensaisStore } from '../persistence/gastos'
 
 export default {
   name: 'PageIndex',
@@ -77,10 +77,6 @@ export default {
   },
   data () {
     return {
-      // data: {
-      //   mes: (new Date()).getMonth() + 1,
-      //   ano: (new Date()).getFullYear()
-      // },
       adicionar: {
         modal: {
           unico: false,
@@ -104,7 +100,7 @@ export default {
   },
   computed: {
     data () {
-      return this.$store.getters['util/dataAtual']
+      return this.$store.state.util.data
     }
   },
   methods: {
@@ -162,26 +158,27 @@ export default {
       this.editar.modal.mensal = false
       this.carregarGastos(true)
     },
-    deletarCartao (gastoId) {
-      this.confirmarDeletar().then(async () => {
-        await cartaoStore.removeItem(gastoId)
-        this.carregarGastos(true)
-      }).catch(() => {})
-    },
-    async salvarCartao (gasto) {
-      await cartaoStore.setItem(gasto.id, gasto)
-      this.editar.modal.cartao = false
-      this.carregarGastos(true)
-    },
     deletarMensal (gastoId) {
       this.confirmarDeletar().then(async () => {
         await mensaisStore.removeItem(gastoId)
         this.carregarGastos(true)
       }).catch(() => {})
     },
-    addCartao (gasto) {
-      this.$store.dispatch('gastos/addCartao', Object.assign(gasto, this.data))
+    async addCartao (gasto) {
+      await this.$store.dispatch('gastos/addCartao', gasto)
       this.adicionar.modal.cartao = false
+      this.carregarGastos(true)
+    },
+    async salvarCartao (gasto) {
+      await this.$store.dispatch('gastos/updateCartao', gasto)
+      this.editar.modal.cartao = false
+      this.carregarGastos(true)
+    },
+    deletarCartao (gasto) {
+      this.confirmarDeletar().then(async () => {
+        await this.$store.dispatch('gastos/deleteCartao', gasto)
+        this.carregarGastos(true)
+      }).catch(() => {})
     },
     async editarUnico (gastoId) {
       this.editar.gasto.unico = this.$store.state.gastos.unicos.find(g => g.id === gastoId)
@@ -191,7 +188,7 @@ export default {
       this.editar.gasto.mensal = await mensaisStore.getItem(gastoId)
       this.editar.modal.mensal = true
     },
-    async editarCartao (gastoId) {
+    async editarCartao (gasto) {
       await this.carregarCartoes()
       if (this.$store.state.cartoes.cartoes.length === 0) {
         this.$q.dialog({
@@ -200,7 +197,7 @@ export default {
         })
         return
       }
-      this.editar.gasto.cartao = await cartaoStore.getItem(gastoId)
+      this.editar.gasto.cartao = gasto
       this.editar.modal.cartao = true
     },
     confirmarDeletar () {
