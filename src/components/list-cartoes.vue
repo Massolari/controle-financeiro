@@ -1,9 +1,9 @@
 <template>
     <q-list>
         <q-list-header>Cartões</q-list-header>
-        <q-item :key="c.id" v-for="c in cartoes">
+        <q-item :key="c.id" v-for="(c, index) in cartoes">
             <q-item-side left icon="credit_card" />
-            <q-item-main :label="`${c.nome}`" :sublabel="`Limite disponível: ${calcularLimite(c)}`"/>
+            <q-item-main :label="`${c.nome}`" :sublabel="`Limite disponível: ${limiteCartao(index)}`"/>
             <q-item-side right>
               <q-btn
                   icon="delete"
@@ -29,12 +29,39 @@
 <script>
 export default {
   name: 'ListCartoes',
+  mounted () {
+    this.calcularLimteCartoes()
+  },
   data () {
-    return {}
+    return {
+      limites: []
+    }
+  },
+  watch: {
+    cartoes (newValue) {
+      if (newValue.length) {
+        this.calcularLimteCartoes()
+      }
+    }
   },
   methods: {
     toMoney (value) {
       return this.$store.getters['util/toMoney'](value)
+    },
+    calcularLimteCartoes () {
+      const calculoLimites = []
+      this.cartoes.forEach(c => {
+        calculoLimites.push(this.calcularLimiteCartao(c))
+      })
+      Promise.all(calculoLimites).then(limites => {
+        this.limites = limites
+      })
+    },
+    calcularLimiteCartao (cartao) {
+      return this.$store.getters['cartoes/limiteDisponivel']({
+        cartao,
+        data: this.$store.state.util.data
+      })
     },
     editar (id) {
       this.$emit('editar', id)
@@ -44,21 +71,13 @@ export default {
     }
   },
   computed: {
-    calcularLimite () {
-      return (cartao) => {
-        let limite = 0
-        this.$store.getters['cartoes/limiteDisponivel']({
-          cartao,
-          data: this.$store.state.util.data
-        }).then(l => {
-          limite = l
-        })
-        console.log(limite)
-        return this.toMoney(limite)
-      }
-    },
     cartoes () {
       return this.$store.state.cartoes.cartoes
+    },
+    limiteCartao () {
+      return (index) => {
+        return (this.limites[index]) ? this.toMoney(this.limites[index]) : 'Calculando...'
+      }
     }
   }
 }

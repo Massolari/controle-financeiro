@@ -159,8 +159,26 @@ export default {
       this.carregarGastos(true)
     },
     deletarMensal (gastoId) {
-      this.confirmarDeletar().then(async () => {
-        await mensaisStore.removeItem(gastoId)
+      this.confirmarDeletarMensal().then(async (opcao) => {
+        let gasto
+        switch (opcao) {
+          case 'todos':
+            await mensaisStore.removeItem(gastoId)
+            break
+          case 'este':
+            gasto = await mensaisStore.getItem(gastoId)
+            if (!gasto.deletados) {
+              gasto.deletados = []
+            }
+            gasto.deletados.push(this.data)
+            await mensaisStore.setItem(gasto.id, gasto)
+            break
+          case 'partir':
+            gasto = await mensaisStore.getItem(gastoId)
+            gasto.deletadoPartir = this.data
+            await mensaisStore.setItem(gasto.id, gasto)
+            break
+        }
         this.carregarGastos(true)
       }).catch(() => {})
     },
@@ -199,6 +217,26 @@ export default {
       }
       this.editar.gasto.cartao = gasto
       this.editar.modal.cartao = true
+    },
+    confirmarDeletarMensal () {
+      return this.$q.dialog({
+        title: 'Atenção!',
+        message: 'Tem certeza que deseja deletar o gasto?',
+        ok: {
+          label: 'Deletar',
+          color: 'red'
+        },
+        cancel: 'Cancelar',
+        options: {
+          type: 'radio',
+          model: 'este',
+          items: [
+            { label: 'Apenas este mês', value: 'este' },
+            { label: 'A partir desse mês em diante', value: 'partir' },
+            { label: 'Todos os meses', value: 'todos' }
+          ]
+        }
+      })
     },
     confirmarDeletar () {
       return this.$q.dialog({
