@@ -1,7 +1,7 @@
 <template>
-    <q-collapsible opened icon="attach_money" :label="`Gastos únicos (${toMoney(totalUnicos)})`">
+  <q-collapsible :opened="totalUnicos > 0" :disable="totalUnicos === 0" icon="attach_money" :label="`Gastos únicos (${toMoney(totalUnicos)})`">
       <q-item :key="u.id" v-for="u in unicos">
-        <q-item-main :label="toMoney(u.valor)" :sublabel="u.desc"/>
+        <q-item-main :label="toMoney(u.valor)" :sublabel="u.desc" @click.native="editar(u.id)"/>
         <q-item-side right>
           <q-btn
               icon="delete"
@@ -11,14 +11,14 @@
               size="md"
               @click="deletar(u.id)"
           />
-          <q-btn
-              icon="create"
-              round
-              outline
-              text-color="blue"
-              size="md"
-              @click="editar(u.id)"
-          />
+          <!-- <q-btn -->
+          <!--     icon="create" -->
+          <!--     round -->
+          <!--     outline -->
+          <!--     text-color="blue" -->
+          <!--     size="md" -->
+          <!--     @click="editar(u.id)" -->
+          <!-- /> -->
         </q-item-side>
       </q-item>
     </q-collapsible>

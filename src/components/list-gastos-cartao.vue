@@ -1,7 +1,7 @@
 <template>
-    <q-collapsible opened icon="credit_card" :label="`Gastos no cartão (${toMoney(totalCartao)})`">
-      <q-item :key="c.id" v-for="c in cartao">
-        <q-item-main :label="montarLabel(c)" :sublabel="montarDescricao(c)"/>
+  <q-collapsible :opened="totalCartao(cartao.id) > 0" :disable="totalCartao(cartao.id) === 0" icon="credit_card" :label="`Gastos no cartão ${cartao.nome} (${toMoney(totalCartao(cartao.id))})`">
+      <q-item :key="c.id" v-for="c in gastosCartao">
+        <q-item-main :label="montarLabel(c)" :sublabel="montarDescricao(c)" @click.native="editar(c)"/>
         <q-item-side right>
           <q-btn
               icon="delete"
@@ -11,14 +11,14 @@
               size="md"
               @click="deletar(c)"
           />
-          <q-btn
-              icon="create"
-              round
-              outline
-              text-color="blue"
-              size="md"
-              @click="editar(c)"
-          />
+          <!-- <q-btn -->
+          <!--     icon="create" -->
+          <!--     round -->
+          <!--     outline -->
+          <!--     text-color="blue" -->
+          <!--     size="md" -->
+          <!--     @click="editar(c)" -->
+          <!-- /> -->
         </q-item-side>
       </q-item>
     </q-collapsible>
@@ -27,6 +27,7 @@
 <script>
 export default {
   name: 'ListGastosCartao',
+  props: ['cartao'],
   data () {
     return {}
   },
@@ -35,8 +36,8 @@ export default {
       return this.$store.getters['util/toMoney'](value)
     },
     calcularParcelaAtual (gasto) {
-      let ano = gasto.ano
-      let mes = gasto.mes
+      let ano = Number(gasto.ano)
+      let mes = Number(gasto.mes)
       let parcela
       for (parcela = 1; parcela <= gasto.parcelas; parcela++) {
         if (ano === this.data.ano && mes === this.data.mes) {
@@ -57,6 +58,9 @@ export default {
     montarLabel (gasto) {
       return `${this.toMoney(gasto.valor)} (${this.toMoney(gasto.valor * gasto.parcelas)})`
     },
+    totalCartao (cartaoId) {
+      return this.$store.getters['gastos/totalCartao'](cartaoId)
+    },
     editar (id) {
       this.$emit('editar', id)
     },
@@ -66,13 +70,10 @@ export default {
   },
   computed: {
     data () {
-      return this.$store.state.util.data
+      return this.$store.state.data
     },
-    cartao () {
-      return this.$store.state.gastos.cartao
-    },
-    totalCartao () {
-      return this.$store.getters['gastos/totalCartao']
+    gastosCartao () {
+      return this.$store.state.gastos.cartao.filter(g => g.cartao === this.cartao.id)
     }
   }
 }

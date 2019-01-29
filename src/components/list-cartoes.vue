@@ -30,7 +30,7 @@
 export default {
   name: 'ListCartoes',
   mounted () {
-    this.calcularLimteCartoes()
+    this.calcularLimiteCartoes()
   },
   data () {
     return {
@@ -40,7 +40,7 @@ export default {
   watch: {
     cartoes (newValue) {
       if (newValue.length) {
-        this.calcularLimteCartoes()
+        this.calcularLimiteCartoes()
       }
     }
   },
@@ -48,7 +48,7 @@ export default {
     toMoney (value) {
       return this.$store.getters['util/toMoney'](value)
     },
-    calcularLimteCartoes () {
+    calcularLimiteCartoes () {
       const calculoLimites = []
       this.cartoes.forEach(c => {
         calculoLimites.push(this.calcularLimiteCartao(c))
@@ -60,7 +60,7 @@ export default {
     calcularLimiteCartao (cartao) {
       return this.$store.getters['cartoes/limiteDisponivel']({
         cartao,
-        data: this.$store.state.util.data
+        data: this.$store.state.data
       })
     },
     editar (id) {

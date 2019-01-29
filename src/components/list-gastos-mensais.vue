@@ -1,7 +1,13 @@
 <template>
-    <q-collapsible opened icon="calendar_today" :label="`Gastos mensais (${toMoney(totalMensais)})`">
+  <q-collapsible :opened="totalMensais > 0" :disable="totalMensais === 0" icon="calendar_today" :label="`Gastos mensais (${toMoney(totalMensais)})`">
       <q-item :key="m.id" v-for="m in mensaisNaoExcluidos">
-        <q-item-main :label="toMoney(m.valor)" :sublabel="`${m.desc} (Venc.: ${m.vencimento})`"/>
+        <q-item-main :label="toMoney(m.valor)" @click.native="editar(m.id)">
+          <q-item-tile sublabel lines="2">
+            {{ m.desc }}<br />
+            {{ montaVencimento(m.vencimento) }}
+          </q-item-tile>
+        </q-item-main>
+        <!-- <q-item-main :label="toMoney(m.valor)" :sublabel="`${m.desc} (Venc.: ${m.vencimento})`"/> -->
         <q-item-side right>
           <q-btn
               icon="delete"
@@ -11,14 +17,14 @@
               size="md"
               @click="deletar(m.id)"
           />
-          <q-btn
-              icon="create"
-              round
-              outline
-              text-color="blue"
-              size="md"
-              @click="editar(m.id)"
-          />
+          <!-- <q-btn -->
+          <!--     icon="create" -->
+          <!--     round -->
+          <!--     outline -->
+          <!--     text-color="blue" -->
+          <!--     size="md" -->
+          <!--     @click="editar(m.id)" -->
+          <!-- /> -->
         </q-item-side>
       </q-item>
     </q-collapsible>
@@ -34,25 +40,35 @@ export default {
     toMoney (value) {
       return this.$store.getters['util/toMoney'](value)
     },
-    verificarDeletadoPartir (data) {
-      if (data.ano < this.data.ano) {
-        return true
-      }
-      if (data.ano === this.data.ano) {
-        return data.mes <= this.data.mes
-      }
-      return false
-    },
     editar (id) {
       this.$emit('editar', id)
     },
     deletar (id) {
       this.$emit('deletar', id)
+    },
+    montaVencimento (diaVencimento) {
+      const data = new Date()
+      const mesAtual = data.getMonth() + 1
+      let texto = `Vencimento: ${diaVencimento}/${`0${this.data.mes}`.slice(-2)}`
+      if (this.data.mes === mesAtual) {
+        if (data.getDate() === diaVencimento) {
+          texto += ' (HOJE!)'
+        }
+        if (data.getDate() < diaVencimento) {
+          const dias = diaVencimento - data.getDate()
+          let tempo = `Daqui há ${dias} dias`
+          if (dias === 1) {
+            tempo = 'amanhã!'
+          }
+          texto += `(${tempo})`
+        }
+      }
+      return texto
     }
   },
   computed: {
     data () {
-      return this.$store.state.util.data
+      return this.$store.state.data
     },
     mensais () {
       return this.$store.state.gastos.mensais
@@ -61,15 +77,7 @@ export default {
       return this.$store.getters['gastos/totalMensais']
     },
     mensaisNaoExcluidos () {
-      return this.mensais.filter(m => {
-        if (m.deletadoPartir && this.verificarDeletadoPartir(m.deletadoPartir)) {
-          return false
-        }
-        if (m.deletados && m.deletados.find(d => d.ano === this.data.ano && d.mes === this.data.mes)) {
-          return false
-        }
-        return true
-      })
+      return this.$store.getters['gastos/mensaisNaoExcluidos']
     }
   }
 }

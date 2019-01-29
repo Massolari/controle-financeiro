@@ -174,9 +174,5 @@ export default {
       label: 'dezembro',
       value: 12
     }
-  ],
-  data: {
-    mes: (new Date()).getMonth() + 1,
-    ano: (new Date()).getFullYear()
-  }
+  ]
 }

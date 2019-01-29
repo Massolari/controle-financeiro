@@ -33,6 +33,9 @@
     ></list-gastos-mensais>
     <q-item-separator></q-item-separator>
     <list-gastos-cartao
+        v-for="c in cartoes"
+        :key="c.id"
+        :cartao="c"
         @deletar="deletarCartao"
         @editar="editarCartao"
     ></list-gastos-cartao>
@@ -49,7 +52,6 @@ import listGastosMensais from './list-gastos-mensais'
 import listGastosCartao from './list-gastos-cartao'
 export default {
   name: 'contasList',
-  props: ['data'],
   data () {
     return {}
   },
@@ -75,14 +77,22 @@ export default {
     deletarCartao (gastoId) {
       this.$emit('deletarCartao', gastoId)
     },
-    anterior () {
-      this.$emit('anterior')
+    async anterior () {
+      await this.$store.dispatch('mesAnterior')
+      this.$emit('mudouMes')
     },
-    proximo () {
-      this.$emit('proximo')
+    async proximo () {
+      await this.$store.dispatch('mesSeguinte')
+      this.$emit('mudouMes')
     }
   },
   computed: {
+    data () {
+      return this.$store.state.data
+    },
+    cartoes () {
+      return this.$store.state.cartoes.cartoes
+    },
     mesAtual () {
       return [
         'janeiro',

@@ -109,7 +109,7 @@ export default {
       return (this.myGasto.valor * this.myGasto.parcelas) || 0
     },
     data () {
-      return this.$store.state.util.data
+      return this.$store.state.data
     },
     meses () {
       return this.$store.state.util.meses
@@ -179,7 +179,7 @@ export default {
       }
       this.$store.getters['cartoes/limiteDisponivel']({
         cartao: this.cartaoSelecionado,
-        data: this.$store.state.util.data
+        data: this.$store.state.data
       }).then(limite => {
         this.limiteCartao = limite
       })

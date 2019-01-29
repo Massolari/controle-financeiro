@@ -62,8 +62,10 @@ export const deleteUnico = async ({ commit }, payload) => {
   return unicosStore.setItem(id, gastos)
 }
 
-export const addMensal = ({ commit }, gasto) => {
+export const addMensal = ({ commit, rootState }, gasto) => {
   gasto.id = uuid()
+  gasto.ano = rootState.data.ano
+  gasto.mes = rootState.data.mes
   return new Promise(resolve => {
     mensaisStore.setItem(gasto.id, gasto).then(() => {
       commit('ADD_MENSAL', gasto)

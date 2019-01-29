@@ -1,9 +1,7 @@
 <template>
   <q-page>
     <conta-list
-      :data="data"
-      @anterior="anterior"
-      @proximo="proximo"
+      @mudouMes="carregarGastos"
       @editarUnico="editarUnico"
       @deletarUnico="deletarUnico"
       @editarMensal="editarMensal"
@@ -74,6 +72,7 @@ export default {
   name: 'PageIndex',
   mounted () {
     this.carregarGastos()
+    this.carregarCartoes()
   },
   data () {
     return {
@@ -100,7 +99,7 @@ export default {
   },
   computed: {
     data () {
-      return this.$store.state.util.data
+      return this.$store.state.data
     }
   },
   methods: {
@@ -119,20 +118,14 @@ export default {
       if (this.$store.state.cartoes.cartoes.length === 0) {
         this.$q.dialog({
           title: 'Atenção!',
-          message: 'Primeiro você deve cadastrar um cartão!'
+          message: 'Primeiro você deve cadastrar um cartão através do menu de cartões!'
         })
         return
       }
       this.adicionar.modal.cartao = true
     },
-    addUnico (gasto) {
-      this.$store.dispatch('gastos/addUnico', Object.assign(gasto, this.data)).then(() => {
-        this.$q.notify({
-          message: 'Gasto único incluído com sucesso!',
-          color: 'positive',
-          position: 'top-right'
-        })
-      })
+    async addUnico (gasto) {
+      await this.$store.dispatch('gastos/addUnico', Object.assign(gasto, this.data))
       this.adicionar.modal.unico = false
     },
     async salvarUnico (gasto) {
@@ -149,8 +142,8 @@ export default {
         this.carregarGastos()
       }).catch(() => {})
     },
-    addMensal (gasto) {
-      this.$store.dispatch('gastos/addMensal', gasto)
+    async addMensal (gasto) {
+      await this.$store.dispatch('gastos/addMensal', gasto)
       this.adicionar.modal.mensal = false
     },
     async salvarMensal (gasto) {
@@ -211,7 +204,7 @@ export default {
       if (this.$store.state.cartoes.cartoes.length === 0) {
         this.$q.dialog({
           title: 'Atenção!',
-          message: 'Primeiro você deve cadastrar um cartão!'
+          message: 'Primeiro você deve cadastrar um cartão através do menu de cartões!'
         })
         return
       }
@@ -221,7 +214,7 @@ export default {
     confirmarDeletarMensal () {
       return this.$q.dialog({
         title: 'Atenção!',
-        message: 'Tem certeza que deseja deletar o gasto?',
+        message: 'Como você deseja deletar o gasto?',
         ok: {
           label: 'Deletar',
           color: 'red'
@@ -231,8 +224,8 @@ export default {
           type: 'radio',
           model: 'este',
           items: [
-            { label: 'Apenas este mês', value: 'este' },
-            { label: 'A partir desse mês em diante', value: 'partir' },
+            { label: 'Apenas deste mês', value: 'este' },
+            { label: 'A partir deste mês em diante', value: 'partir' },
             { label: 'Todos os meses', value: 'todos' }
           ]
         }
@@ -249,17 +242,9 @@ export default {
         cancel: 'Cancelar'
       })
     },
-    async anterior () {
-      await this.$store.dispatch('util/mesAnterior')
-      this.carregarGastos()
-    },
-    async proximo () {
-      await this.$store.dispatch('util/mesSeguinte')
-      this.carregarGastos()
-    },
     async carregarGastos (force = false) {
       this.$q.loading.show({
-        delay: 0,
+        delay: 400,
         message: 'Carregando gastos...'
       })
       await this.$store.dispatch('gastos/carregar', {

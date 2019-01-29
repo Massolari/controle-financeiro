@@ -14,8 +14,8 @@
           @click="leftDrawer = !leftDrawer"
         />
         <q-toolbar-title>
-            Controle de gastos
-          <span slot="subtitle">Situação: Tranquilo</span>
+          Meus gastos
+          <!-- <span slot="subtitle">Situação: Tranquilo</span> -->
         </q-toolbar-title>
       </q-toolbar>
     </q-layout-header>
@@ -31,7 +31,7 @@
         <!-- <q-list-header>Opções</q-list-header> -->
         <q-item exact to="/">
           <q-item-side icon="attach_money" />
-          <q-item-main label="Resumo" sublabel="Gastos do mês" />
+          <q-item-main label="Resumo" sublabel="Gastos por mês" />
         </q-item>
         <q-item to="/cartao">
           <q-item-side icon="credit_card" />

@@ -1,9 +1,9 @@
 {
   "name": "controle-gastos",
   "version": "1.0.0",
-  "description": "A Quasar Framework app",
-  "productName": "Controle Financeiro DM",
-  "cordovaId": "org.massolari.controle.financeiro",
+  "description": "Gerencie seus gastos de forma prática, simples e rápida!",
+  "productName": "Meus gastos",
+  "cordovaId": "org.massolari.meus.gastos",
   "author": "Massolari <douglasmassolari@hotmail.com>",
   "private": true,
   "scripts": {
