@@ -1,7 +1,6 @@
 <template>
   <q-dialog
     :value="show"
-    @show="limparCampos"
     prevent-close
     >
       <span slot="title">Adicionar gasto mensal</span>
@@ -19,9 +18,8 @@
         <q-field class="distance">
           <q-input
             v-model="conta.valor"
-            type="number"
-            :decimals="2"
-            :step="1.4"
+            ref="valor"
+            v-money="{}"
             prefix="R$ "
             float-label="Valor"
             :error="$v.conta.valor.$error"
@@ -45,7 +43,7 @@
 </template>
 
 <script>
-import { required, minValue } from 'vuelidate/lib/validators'
+import { required } from 'vuelidate/lib/validators'
 
 export default {
   props: ['show'],
@@ -67,8 +65,14 @@ export default {
     conta: {
       desc: { required },
       valor: {
-        required,
-        minValue: minValue(0.01)
+        required
+      }
+    }
+  },
+  watch: {
+    show (newValue) {
+      if (newValue) {
+        this.limparCampos()
       }
     }
   },
@@ -86,7 +90,8 @@ export default {
     },
     limparCampos () {
       this.conta.desc = ''
-      this.conta.valor = ''
+      this.$refs.valor.$el.getElementsByTagName('input')[0].value = 0
+      this.conta.valor = 0
       this.conta.vencimento = 1
       this.$v.conta.$reset()
     },

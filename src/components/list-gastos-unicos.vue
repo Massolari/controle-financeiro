@@ -1,5 +1,11 @@
 <template>
-  <q-collapsible :opened="totalUnicos > 0" :disable="totalUnicos === 0" icon="attach_money" :label="`Gastos únicos (${toMoney(totalUnicos)})`">
+  <q-collapsible :opened="totalUnicos > 0" :disable="totalUnicos === 0">
+      <template slot="header">
+        <q-item-side left>
+          <q-icon name="attach_money" color="secondary" size="24px"/>
+        </q-item-side>
+        <q-item-main :label="`Únicos (${toMoney(totalUnicos)})`" />
+      </template>
       <q-item :key="u.id" v-for="u in unicos">
         <q-item-main :label="toMoney(u.valor)" :sublabel="u.desc" @click.native="editar(u.id)"/>
         <q-item-side right>

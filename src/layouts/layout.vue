@@ -4,7 +4,7 @@
     <!-- (Optional) The Header -->
     <q-layout-header>
       <q-toolbar
-         color="dark"
+         color="primary"
           >
         <q-btn
           flat

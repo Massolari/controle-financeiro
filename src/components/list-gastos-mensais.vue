@@ -1,5 +1,11 @@
 <template>
-  <q-collapsible :opened="totalMensais > 0" :disable="totalMensais === 0" icon="calendar_today" :label="`Gastos mensais (${toMoney(totalMensais)})`">
+  <q-collapsible :opened="totalMensais > 0" :disable="totalMensais === 0">
+      <template slot="header">
+        <q-item-side left>
+          <q-icon name="calendar_today" color="purple" size="24px"/>
+        </q-item-side>
+        <q-item-main :label="`Mensais (${toMoney(totalMensais)})`"/>
+      </template>
       <q-item :key="m.id" v-for="m in mensaisNaoExcluidos">
         <q-item-main :label="toMoney(m.valor)" @click.native="editar(m.id)">
           <q-item-tile sublabel lines="2">

@@ -42,13 +42,13 @@ export const mensaisNaoExcluidos = (state, getters, rootState) => {
   })
 }
 
-export const totalMensais = (state, getters) => {
-  return getters.mensaisNaoExcluidos.reduce((soma, gasto) => soma + gasto.valor, 0)
+export const totalMensais = (state, getters, rootState, rootGetters) => {
+  return getters.mensaisNaoExcluidos.reduce((soma, gasto) => soma + rootGetters.toNumber(gasto.valor), 0)
 }
-export const totalCartao = (state) =>
-  (cartaoId) => state.cartao.reduce((soma, gasto) => (gasto.cartao === cartaoId) ? soma + gasto.valor : soma, 0)
+export const totalCartao = (state, getters, rootState, rootGetters) =>
+  (cartaoId) => state.cartao.reduce((soma, gasto) => (gasto.cartao === cartaoId) ? soma + rootGetters.toNumber(gasto.valor) : soma, 0)
 
-export const totalTodosCartao = (state) => state.cartao.reduce((soma, gasto) => soma + gasto.valor, 0)
+export const totalTodosCartao = (state, getters, rootState, rootGetters) => state.cartao.reduce((soma, gasto) => soma + rootGetters.toNumber(gasto.valor), 0)
 
 export const total = (state, getters) => {
   return getters.totalUnicos + getters.totalMensais + getters.totalTodosCartao

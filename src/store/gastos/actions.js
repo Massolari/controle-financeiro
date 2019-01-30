@@ -57,6 +57,7 @@ export const deleteUnico = async ({ commit }, payload) => {
   const deleteIndex = gastos.findIndex(g => g.id === payload.gastoId)
   if (deleteIndex === -1) {
     console.error('Índice de deleção não encontrado!')
+    return
   }
   gastos.splice(deleteIndex, 1)
   return unicosStore.setItem(id, gastos)
@@ -105,8 +106,12 @@ export const deleteCartao = ({ commit }, gasto) => {
     for (let i = 1; i <= gasto.parcelas; i++) {
       const id = `${ano}-${mes}`
       let gastos = await cartaoStore.getItem(id)
-      const deleteIndex = gastos.find(g => g.id === gasto.id)
-      gastos.splice(deleteIndex, 1)
+      const deleteIndex = gastos.findIndex(g => g.id === gasto.id)
+      if (deleteIndex > -1) {
+        gastos.splice(deleteIndex, 1)
+      } else {
+        console.error('Delete index não encontrado')
+      }
       await cartaoStore.setItem(id, gastos)
       if (mes === 12) {
         ano++
@@ -120,7 +125,6 @@ export const deleteCartao = ({ commit }, gasto) => {
 }
 
 export const updateCartao = async ({ commit }, gastos) => {
-  console.log(gastos)
   await deleteCartao({ commit }, gastos.antigo)
   await addCartao({ commit }, gastos.novo)
 }

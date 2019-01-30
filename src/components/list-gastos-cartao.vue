@@ -1,5 +1,11 @@
 <template>
-  <q-collapsible :opened="totalCartao(cartao.id) > 0" :disable="totalCartao(cartao.id) === 0" icon="credit_card" :label="`Gastos no cartão ${cartao.nome} (${toMoney(totalCartao(cartao.id))})`">
+  <q-collapsible :opened="totalCartao(cartao.id) > 0" :disable="totalCartao(cartao.id) === 0">
+      <template slot="header">
+        <q-item-side left>
+          <q-icon name="credit_card" color="red" size="24px"/>
+        </q-item-side>
+        <q-item-main :label="`Cartão ${cartao.nome} (${toMoney(totalCartao(cartao.id))})`"/>
+      </template>
       <q-item :key="c.id" v-for="c in gastosCartao">
         <q-item-main :label="montarLabel(c)" :sublabel="montarDescricao(c)" @click.native="editar(c)"/>
         <q-item-side right>
@@ -53,14 +59,14 @@ export default {
       return parcela
     },
     montarDescricao (gasto) {
-      let descricao = `${gasto}`
+      let descricao = `${gasto.desc}`
       if (gasto.parcelas > 1) {
         descricao += ` (${this.calcularParcelaAtual(gasto)}/${gasto.parcelas})`
       }
       return descricao
     },
     montarLabel (gasto) {
-      let label = `${this.toMoney(gasto.valor)} ` 
+      let label = `${this.toMoney(gasto.valor)} `
       if (gasto.parcelas > 1) {
         label += `(${this.toMoney(gasto.valor * gasto.parcelas)})`
       }

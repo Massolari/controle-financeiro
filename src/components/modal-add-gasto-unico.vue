@@ -1,44 +1,42 @@
 <template>
   <q-dialog
     :value="show"
-    @show="limparCampos"
     prevent-close
     >
-      <span slot="title">Adicionar gasto único</span>
+    <span slot="title">Adicionar gasto único</span>
 
-      <div slot="body">
-        <q-field class="distance">
-          <q-input
-            v-model="conta.desc"
-            float-label="Descrição"
-            placeholder="Ex.: Hambúrguer"
-            :error="$v.conta.desc.$error"
-            @blur="$v.conta.desc.$touch"
+    <div slot="body">
+      <q-field class="distance">
+        <q-input
+          v-model="conta.desc"
+          float-label="Descrição"
+          placeholder="Ex.: Hambúrguer"
+          :error="$v.conta.desc.$error"
+          @blur="$v.conta.desc.$touch"
           />
-        </q-field>
-        <q-field class="distance">
-          <q-input
-            v-model="conta.valor"
-            type="number"
-            :decimals="2"
-            :step="1.4"
-            prefix="R$ "
-            float-label="Valor"
-            :error="$v.conta.valor.$error"
-            @blur="$v.conta.valor.$touch"
+      </q-field>
+      <q-field class="distance">
+        <q-input
+          v-model="conta.valor"
+          ref="valor"
+          v-money="{}"
+          prefix="R$ "
+          float-label="Valor"
+          :error="$v.conta.valor.$error"
+          @blur="$v.conta.valor.$touch"
           />
-        </q-field>
-      </div>
+      </q-field>
+    </div>
 
-      <template slot="buttons" slot-scope="props">
-        <q-btn flat label="Cancelar" @click="close" />
+    <template slot="buttons" slot-scope="props">
+      <q-btn flat label="Cancelar" @click="close" />
         <q-btn color="primary" label="Adicionar" @click="adicionar" />
-      </template>
-    </q-dialog>
+    </template>
+  </q-dialog>
 </template>
 
 <script>
-import { required, minValue } from 'vuelidate/lib/validators'
+import { required } from 'vuelidate/lib/validators'
 
 export default {
   props: ['show'],
@@ -53,9 +51,13 @@ export default {
   validations: {
     conta: {
       desc: { required },
-      valor: {
-        required,
-        minValue: minValue(0.01)
+      valor: { required }
+    }
+  },
+  watch: {
+    show (newValue) {
+      if (newValue) {
+        this.limparCampos()
       }
     }
   },
@@ -73,7 +75,8 @@ export default {
     },
     limparCampos () {
       this.conta.desc = ''
-      this.conta.valor = ''
+      this.$refs.valor.$el.getElementsByTagName('input')[0].value = 0
+      this.conta.valor = 0
       this.$v.conta.$reset()
     },
     close () {
@@ -83,7 +86,7 @@ export default {
 }
 </script>
 <style>
-    .distance {
-        padding: 5px;
-    }
+.distance {
+  padding: 5px;
+}
 </style>

@@ -34,9 +34,8 @@
         <q-field class="distance">
           <q-input
             v-model="gasto.valor"
-            type="number"
-            :decimals="2"
-            :step="1.4"
+            ref="valor"
+            v-money="{}"
             prefix="R$ "
             float-label="Valor da parcela"
             :error="$v.gasto.valor.$error"
@@ -56,7 +55,6 @@
           <q-input
             :value="total"
             float-label="Valor total"
-            prefix="R$ "
             :disable="true"
           />
         </q-field>
@@ -111,7 +109,7 @@ export default {
   },
   computed: {
     total () {
-      return (this.gasto.valor * this.gasto.parcelas) || 0
+      return this.$store.getters['toMoneyFromNumber']((this.$store.getters['toNumber'](this.gasto.valor) * this.gasto.parcelas) || 0)
     },
     data () {
       return this.$store.state.data
@@ -152,8 +150,7 @@ export default {
         maxLength: maxLength(4)
       },
       valor: {
-        required,
-        minValue: minValue(0.01)
+        required
       }
     }
   },
@@ -195,7 +192,8 @@ export default {
     },
     limparCampos () {
       this.gasto.desc = ''
-      this.gasto.valor = ''
+      this.$refs.valor.$el.getElementsByTagName('input')[0].value = 0
+      this.gasto.valor = 0
       this.gasto.cartao = ''
       this.gasto.parcelas = 1
       this.limiteCartao = 0
