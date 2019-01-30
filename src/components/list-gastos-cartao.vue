@@ -53,10 +53,18 @@ export default {
       return parcela
     },
     montarDescricao (gasto) {
-      return `${gasto.desc} (${this.calcularParcelaAtual(gasto)}/${gasto.parcelas})`
+      let descricao = `${gasto}`
+      if (gasto.parcelas > 1) {
+        descricao += ` (${this.calcularParcelaAtual(gasto)}/${gasto.parcelas})`
+      }
+      return descricao
     },
     montarLabel (gasto) {
-      return `${this.toMoney(gasto.valor)} (${this.toMoney(gasto.valor * gasto.parcelas)})`
+      let label = `${this.toMoney(gasto.valor)} ` 
+      if (gasto.parcelas > 1) {
+        label += `(${this.toMoney(gasto.valor * gasto.parcelas)})`
+      }
+      return label
     },
     totalCartao (cartaoId) {
       return this.$store.getters['gastos/totalCartao'](cartaoId)
