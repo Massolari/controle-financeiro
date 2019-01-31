@@ -15,22 +15,22 @@
             @blur="$v.cartao.nome.$touch"
           />
         </q-field>
-        <q-field class="distance">
-          <q-input
-            v-model="cartao.limite"
-            type="number"
-            :decimals="2"
-            :step="1.4"
-            prefix="R$ "
-            float-label="Limite"
-            :error="$v.cartao.limite.$error"
-            @blur="$v.cartao.limite.$touch"
-          />
-        </q-field>
+        <!-- <q-field class="distance"> -->
+        <!--   <q-input -->
+        <!--     v-model="cartao.limite" -->
+        <!--     type="number" -->
+        <!--     :decimals="2" -->
+        <!--     :step="1.4" -->
+        <!--     prefix="R$ " -->
+        <!--     float-label="Limite" -->
+        <!--     :error="$v.cartao.limite.$error" -->
+        <!--     @blur="$v.cartao.limite.$touch" -->
+        <!--   /> -->
+        <!-- </q-field> -->
 
         <q-field class="distance">
           <q-select
-            float-label="Dia que o cartão vira"
+            float-label="Dia de fechamento da fatura"
             v-model="cartao.vira"
             :options="dias"
           />
@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { required, minValue } from 'vuelidate/lib/validators'
+import { required } from 'vuelidate/lib/validators'
 
 export default {
   props: ['show'],
@@ -79,11 +79,11 @@ export default {
   },
   validations: {
     cartao: {
-      nome: { required },
-      limite: {
-        required,
-        minValue: minValue(0.01)
-      }
+      nome: { required }
+      // limite: {
+      //   required,
+      //   minValue: minValue(0.01)
+      // }
     }
   },
   methods: {
@@ -104,7 +104,7 @@ export default {
     },
     limparCampos () {
       this.cartao.nome = ''
-      this.cartao.limite = ''
+      this.cartao.limite = 0
       this.cartao.vira = 1
       this.$v.cartao.$reset()
     }

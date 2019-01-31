@@ -2,8 +2,8 @@
 export const someGetter = (state) => {
 }
 */
-export const totalUnicos = (state) => {
-  return state.unicos.reduce((soma, gasto) => soma + gasto.valor, 0)
+export const totalUnicos = (state, getters, rootState, rootGetters) => {
+  return state.unicos.reduce((soma, gasto) => soma + rootGetters.toNumber(gasto.valor), 0)
 }
 
 const verificarDeletadoPartir = (dataDeletado, dataAtual) => {

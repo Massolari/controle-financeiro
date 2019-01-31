@@ -13,14 +13,14 @@
             @input="calcularLimite"
           />
         </q-field>
-        <q-field class="distance">
-          <q-input
-            :value="limiteCartao"
-            float-label="Limite disponível"
-            prefix="R$ "
-            :disable="true"
-          />
-        </q-field>
+        <!-- <q-field class="distance"> -->
+        <!--   <q-input -->
+        <!--     :value="limiteCartao" -->
+        <!--     float-label="Limite disponível" -->
+        <!--     prefix="R$ " -->
+        <!--     :disable="true" -->
+        <!--   /> -->
+        <!-- </q-field> -->
         <q-field class="distance">
           <q-input
             v-model="myGasto.desc"
@@ -33,9 +33,8 @@
         <q-field class="distance">
           <q-input
             v-model="myGasto.valor"
-            type="number"
-            :decimals="2"
-            :step="1.4"
+            ref="valor"
+            v-money="{}"
             prefix="R$ "
             float-label="Valor da parcela"
             :error="$v.myGasto.valor.$error"
@@ -55,7 +54,6 @@
           <q-input
             :value="total"
             float-label="Valor total"
-            prefix="R$ "
             :disable="true"
           />
         </q-field>
@@ -106,7 +104,7 @@ export default {
   },
   computed: {
     total () {
-      return (this.myGasto.valor * this.myGasto.parcelas) || 0
+      return this.$store.getters['toMoneyFromNumber']((this.$store.getters['toNumber'](this.myGasto.valor) * this.myGasto.parcelas) || 0)
     },
     data () {
       return this.$store.state.data
@@ -122,11 +120,12 @@ export default {
     gasto (newValue) {
       if (newValue) {
         this.myGasto = Object.assign({}, newValue)
+        this.$refs.valor.$el.getElementsByTagName('input')[0].value = this.myGasto.valor
       }
     },
     show (newValue) {
       this.cartoes = this.$store.state.cartoes.cartoes.map(c => ({ label: c.nome, value: c.id }))
-      this.calcularLimite()
+      // this.calcularLimite()
     }
   },
   validations: {
@@ -142,10 +141,7 @@ export default {
         minLength: minLength(4),
         maxLength: maxLength(4)
       },
-      valor: {
-        required,
-        minValue: minValue(0.01)
-      }
+      valor: { required }
     }
   },
   methods: {

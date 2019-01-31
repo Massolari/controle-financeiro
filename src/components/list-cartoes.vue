@@ -1,9 +1,10 @@
 <template>
     <q-list>
         <q-list-header>Cartões</q-list-header>
-        <q-item :key="c.id" v-for="(c, index) in cartoes">
+        <q-item :key="c.id" v-for="c in cartoes">
             <q-item-side left icon="credit_card" />
-            <q-item-main :label="`${c.nome}`" :sublabel="`Limite disponível: ${limiteCartao(index)}`"/>
+            <!-- <q-item-main :label="`${c.nome}`" :sublabel="`Limite disponível: ${limiteCartao(index)}`"/> -->
+            <q-item-main :label="`${c.nome}`" :sublabel="`Dia de fechamento da fatura: ${`0${c.vira}`.slice(-2)}`" @click.native="editar(c.id)"/>
             <q-item-side right>
               <q-btn
                   icon="delete"
@@ -13,14 +14,14 @@
                   size="md"
                   @click="deletar(c.id)"
               />
-              <q-btn
-                  icon="create"
-                  round
-                  outline
-                  text-color="blue"
-                  size="md"
-                  @click="editar(c.id)"
-              />
+              <!-- <q-btn -->
+              <!--     icon="create" -->
+              <!--     round -->
+              <!--     outline -->
+              <!--     text-color="blue" -->
+              <!--     size="md" -->
+              <!--     @click="editar(c.id)" -->
+              <!-- /> -->
             </q-item-side>
         </q-item>
     </q-list>

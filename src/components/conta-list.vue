@@ -57,7 +57,7 @@ export default {
   },
   methods: {
     toMoney (number) {
-      return this.$store.getters['util/toMoney'](number)
+      return this.$store.getters['toMoneyFromNumber'](number)
     },
     editarUnico (gastoId) {
       this.$emit('editarUnico', gastoId)

@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     toMoney (value) {
-      return this.$store.getters['util/toMoney'](value)
+      return this.$store.getters['toMoneyFromNumber'](value)
     },
     calcularParcelaAtual (gasto) {
       let ano = Number(gasto.ano)
@@ -66,9 +66,9 @@ export default {
       return descricao
     },
     montarLabel (gasto) {
-      let label = `${this.toMoney(gasto.valor)} `
+      let label = `${this.toMoney(this.$store.getters['toNumber'](gasto.valor))} `
       if (gasto.parcelas > 1) {
-        label += `(${this.toMoney(gasto.valor * gasto.parcelas)})`
+        label += `(${this.toMoney(this.$store.getters['toNumber'](gasto.valor) * gasto.parcelas)})`
       }
       return label
     },

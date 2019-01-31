@@ -19,9 +19,8 @@
         <q-field class="distance">
           <q-input
             v-model="myGasto.valor"
-            type="number"
-            :decimals="2"
-            :step="1.4"
+            ref="valor"
+            v-money="{}"
             prefix="R$ "
             float-label="Valor"
             :error="$v.myGasto.valor.$error"
@@ -38,7 +37,7 @@
 </template>
 
 <script>
-import { required, minValue } from 'vuelidate/lib/validators'
+import { required } from 'vuelidate/lib/validators'
 
 export default {
   props: ['show', 'gasto'],
@@ -54,17 +53,15 @@ export default {
   watch: {
     gasto (newValue) {
       if (newValue) {
-        this.myGasto = newValue
+        this.myGasto = Object.assign({}, newValue)
+        this.$refs.valor.$el.getElementsByTagName('input')[0].value = this.myGasto.valor
       }
     }
   },
   validations: {
     myGasto: {
       desc: { required },
-      valor: {
-        required,
-        minValue: minValue(0.01)
-      }
+      valor: { required }
     }
   },
   methods: {

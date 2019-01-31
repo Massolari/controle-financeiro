@@ -7,7 +7,7 @@
         <q-item-main :label="`Mensais (${toMoney(totalMensais)})`"/>
       </template>
       <q-item :key="m.id" v-for="m in mensaisNaoExcluidos">
-        <q-item-main :label="toMoney(m.valor)" @click.native="editar(m.id)">
+        <q-item-main :label="'R$ ' + m.valor" @click.native="editar(m.id)">
           <q-item-tile sublabel lines="2">
             {{ m.desc }}<br />
             {{ montaVencimento(m.vencimento) }}
@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     toMoney (value) {
-      return this.$store.getters['util/toMoney'](value)
+      return this.$store.getters['toMoneyFromNumber'](value)
     },
     editar (id) {
       this.$emit('editar', id)
@@ -55,7 +55,7 @@ export default {
     montaVencimento (diaVencimento) {
       const data = new Date()
       const mesAtual = data.getMonth() + 1
-      let texto = `Vencimento: ${diaVencimento}/${`0${this.data.mes}`.slice(-2)}`
+      let texto = `Vencimento: ${`0${diaVencimento}`.slice(-2)}/${`0${this.data.mes}`.slice(-2)}`
       if (this.data.mes === mesAtual) {
         if (data.getDate() === diaVencimento) {
           texto += ' (HOJE!)'
