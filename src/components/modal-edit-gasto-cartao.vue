@@ -104,7 +104,7 @@ export default {
   },
   computed: {
     total () {
-      return this.$store.getters['toMoneyFromNumber']((this.$store.getters['toNumber'](this.myGasto.valor) * this.myGasto.parcelas) || 0)
+      return this.$store.getters['toMoney']((this.$store.getters['toNumber'](this.myGasto.valor) * this.myGasto.parcelas) || 0)
     },
     data () {
       return this.$store.state.data
@@ -120,7 +120,7 @@ export default {
     gasto (newValue) {
       if (newValue) {
         this.myGasto = Object.assign({}, newValue)
-        this.$refs.valor.$el.getElementsByTagName('input')[0].value = this.myGasto.valor
+        this.$refs.valor.$el.getElementsByTagName('input')[0].value = this.myGasto.valor * 100
       }
     },
     show (newValue) {

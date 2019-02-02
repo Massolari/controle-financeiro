@@ -7,7 +7,7 @@
         <q-item-main :label="`Únicos (${toMoney(totalUnicos)})`" />
       </template>
       <q-item :key="u.id" v-for="u in unicos">
-        <q-item-main :label="'R$ ' + u.valor" :sublabel="u.desc" @click.native="editar(u.id)"/>
+        <q-item-main :label="toMoney(u.valor)" :sublabel="u.desc" @click.native="editar(u.id)"/>
         <q-item-side right>
           <q-btn
               icon="delete"
@@ -38,7 +38,7 @@ export default {
   },
   methods: {
     toMoney (value) {
-      return this.$store.getters['toMoneyFromNumber'](value)
+      return this.$store.getters['toMoney'](value)
     },
     editar (id) {
       this.$emit('editar', id)

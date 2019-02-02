@@ -11,17 +11,16 @@
             float-label="Cartão"
             v-model="gasto.cartao"
             :options="cartoes"
-            @input="calcularLimite"
           />
         </q-field>
-        <q-field class="distance">
+        <!-- <q-field class="distance">
           <q-input
             :value="limiteCartao"
             float-label="Limite disponível"
             prefix="R$ "
             :disable="true"
           />
-        </q-field>
+        </q-field> -->
         <q-field class="distance">
           <q-input
             v-model="gasto.desc"
@@ -103,13 +102,13 @@ export default {
           label: 'Selecione'
         }
       },
-      cartoes: [],
-      limiteCartao: 0
+      cartoes: []
+      // limiteCartao: 0
     }
   },
   computed: {
     total () {
-      return this.$store.getters['toMoneyFromNumber']((this.$store.getters['toNumber'](this.gasto.valor) * this.gasto.parcelas) || 0)
+      return this.$store.getters['toMoney']((this.$store.getters['toNumber'](this.gasto.valor) * this.gasto.parcelas) || 0)
     },
     data () {
       return this.$store.state.data
@@ -176,17 +175,17 @@ export default {
         return false
       }
     },
-    calcularLimite () {
-      if (!this.gasto.cartao) {
-        this.limiteCartao = 0
-      }
-      this.$store.getters['cartoes/limiteDisponivel']({
-        cartao: this.cartaoSelecionado,
-        data: this.$store.state.data
-      }).then(limite => {
-        this.limiteCartao = limite
-      })
-    },
+    // calcularLimite () {
+    //   if (!this.gasto.cartao) {
+    //     this.limiteCartao = 0
+    //   }
+    //   this.$store.getters['cartoes/limiteDisponivel']({
+    //     cartao: this.cartaoSelecionado,
+    //     data: this.$store.state.data
+    //   }).then(limite => {
+    //     this.limiteCartao = limite
+    //   })
+    // },
     cancel () {
       this.$emit('close')
     },
@@ -196,7 +195,7 @@ export default {
       this.gasto.valor = 0
       this.gasto.cartao = ''
       this.gasto.parcelas = 1
-      this.limiteCartao = 0
+      // this.limiteCartao = 0
       this.$v.gasto.$reset()
     }
   }

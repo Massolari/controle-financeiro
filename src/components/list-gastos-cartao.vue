@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     toMoney (value) {
-      return this.$store.getters['toMoneyFromNumber'](value)
+      return this.$store.getters['toMoney'](value)
     },
     calcularParcelaAtual (gasto) {
       let ano = Number(gasto.ano)

@@ -54,7 +54,7 @@ export default {
     gasto (newValue) {
       if (newValue) {
         this.myGasto = Object.assign({}, newValue)
-        this.$refs.valor.$el.getElementsByTagName('input')[0].value = this.myGasto.valor
+        this.$refs.valor.$el.getElementsByTagName('input')[0].value = this.myGasto.valor * 100
       }
     }
   },

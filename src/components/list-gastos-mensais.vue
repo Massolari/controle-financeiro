@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     toMoney (value) {
-      return this.$store.getters['toMoneyFromNumber'](value)
+      return this.$store.getters['toMoney'](value)
     },
     editar (id) {
       this.$emit('editar', id)
@@ -66,7 +66,7 @@ export default {
           if (dias === 1) {
             tempo = 'amanhã!'
           }
-          texto += `(${tempo})`
+          texto += ` (${tempo})`
         }
       }
       return texto

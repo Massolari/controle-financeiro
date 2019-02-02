@@ -66,6 +66,7 @@ module.exports = function (ctx) {
         'QItemTile',
         'QField',
         'QInput',
+        'QRadio',
         'QSelect',
         'QActionSheet',
         'QModal'

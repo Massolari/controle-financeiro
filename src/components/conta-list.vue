@@ -10,7 +10,7 @@
                   @click="anterior"
               />
           </q-item-side>
-              <q-item-main>Gastos no mês de {{ mesAtual }} de {{ data.ano }}</q-item-main>
+              <q-item-main>Gastos em {{ mesAtual }} de {{ data.ano }}</q-item-main>
           <q-item-side right>
               <q-btn
                   icon="fa fa-arrow-right"
@@ -57,7 +57,7 @@ export default {
   },
   methods: {
     toMoney (number) {
-      return this.$store.getters['toMoneyFromNumber'](number)
+      return this.$store.getters['toMoney'](number)
     },
     editarUnico (gastoId) {
       this.$emit('editarUnico', gastoId)

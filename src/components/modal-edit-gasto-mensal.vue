@@ -7,6 +7,10 @@
 
       <div slot="body">
         <q-field class="distance">
+          <q-radio v-model="opcao" val="este" label="Apenas este mês" />
+          <q-radio v-model="opcao" val="partir" label="A partir deste mês"/>
+        </q-field>
+        <q-field class="distance">
           <q-input
             v-model="myGasto.desc"
             float-label="Descrição"
@@ -53,7 +57,8 @@ export default {
         desc: '',
         valor: 0,
         vencimento: 1
-      }
+      },
+      opcao: 'este'
     }
   },
   computed: {
@@ -65,7 +70,7 @@ export default {
     gasto (newValue) {
       if (newValue) {
         this.myGasto = Object.assign({}, newValue)
-        this.$refs.valor.$el.getElementsByTagName('input')[0].value = this.myGasto.valor
+        this.$refs.valor.$el.getElementsByTagName('input')[0].value = this.myGasto.valor * 100
       }
     }
   },
@@ -85,7 +90,10 @@ export default {
         })
         return
       }
-      this.$emit('salvar', Object.assign({}, this.myGasto))
+      this.$emit('salvar', {
+        gasto: Object.assign({}, this.myGasto),
+        opcao: this.opcao
+      })
     },
     close () {
       this.$emit('close')

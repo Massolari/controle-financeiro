@@ -146,49 +146,47 @@ export default {
       await this.$store.dispatch('gastos/addMensal', gasto)
       this.adicionar.modal.mensal = false
     },
-    async salvarMensal (gasto) {
-      await mensaisStore.setItem(gasto.id, gasto)
+    async salvarMensal (gastoOpcao) {
+      await this.$store.dispatch('gastos/updateMensal', { ...gastoOpcao, data: this.data })
       this.editar.modal.mensal = false
-      this.carregarGastos(true)
+      this.carregarGastos()
     },
     deletarMensal (gastoId) {
       this.confirmarDeletarMensal().then(async (opcao) => {
-        let gasto
         switch (opcao) {
           case 'todos':
-            await mensaisStore.removeItem(gastoId)
+            await this.$store.dispatch('gastos/deleteMensal', { gastoId })
             break
           case 'este':
-            gasto = await mensaisStore.getItem(gastoId)
-            if (!gasto.deletados) {
-              gasto.deletados = []
-            }
-            gasto.deletados.push(this.data)
-            await mensaisStore.setItem(gasto.id, gasto)
+            await this.$store.dispatch('gastos/deleteMensalMes', {
+              gastoId,
+              data: this.data
+            })
             break
           case 'partir':
-            gasto = await mensaisStore.getItem(gastoId)
-            gasto.deletadoPartir = this.data
-            await mensaisStore.setItem(gasto.id, gasto)
+            await this.$store.dispatch('gastos/deleteMensalPartir', {
+              gastoId,
+              data: this.data
+            })
             break
         }
-        this.carregarGastos(true)
+        this.carregarGastos()
       }).catch(() => {})
     },
     async addCartao (gasto) {
       await this.$store.dispatch('gastos/addCartao', gasto)
       this.adicionar.modal.cartao = false
-      this.carregarGastos(true)
+      this.carregarGastos()
     },
     async salvarCartao (gasto) {
       await this.$store.dispatch('gastos/updateCartao', gasto)
       this.editar.modal.cartao = false
-      this.carregarGastos(true)
+      this.carregarGastos()
     },
     deletarCartao (gasto) {
       this.confirmarDeletar().then(async () => {
         await this.$store.dispatch('gastos/deleteCartao', gasto)
-        this.carregarGastos(true)
+        this.carregarGastos()
       }).catch(() => {})
     },
     async editarUnico (gastoId) {
@@ -196,7 +194,13 @@ export default {
       this.editar.modal.unico = true
     },
     async editarMensal (gastoId) {
-      this.editar.gasto.mensal = await mensaisStore.getItem(gastoId)
+      const gastosMes = await mensaisStore.getItem(`${this.data.ano}-${this.data.mes}`) || []
+      let gasto = gastosMes.find(g => g.id === gastoId)
+      if (!gasto) {
+        const gastos = await mensaisStore.getItem(`gastos`) || []
+        gasto = gastos.find(g => g.id === gastoId)
+      }
+      this.editar.gasto.mensal = gasto
       this.editar.modal.mensal = true
     },
     async editarCartao (gasto) {
