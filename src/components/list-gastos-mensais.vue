@@ -7,7 +7,7 @@
         <q-item-main :label="`Mensais (${toMoney(totalMensais)})`"/>
       </template>
       <q-item :key="m.id" v-for="m in mensaisNaoExcluidos">
-        <q-item-main :label="'R$ ' + m.valor" @click.native="editar(m.id)">
+        <q-item-main :label="toMoney(m.valor)" @click.native="editar(m.id)">
           <q-item-tile sublabel lines="2">
             {{ m.desc }}<br />
             {{ montaVencimento(m.vencimento) }}

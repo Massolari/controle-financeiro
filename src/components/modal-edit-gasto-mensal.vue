@@ -71,6 +71,7 @@ export default {
       if (newValue) {
         this.myGasto = Object.assign({}, newValue)
         this.$refs.valor.$el.getElementsByTagName('input')[0].value = this.myGasto.valor * 100
+        this.opcao = 'este'
       }
     }
   },

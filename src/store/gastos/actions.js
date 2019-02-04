@@ -34,6 +34,9 @@ export const carregar = ({ state }, { data }) => {
         if (g.mesesDeletado && g.mesesDeletado.includes(id)) {
           return false
         }
+        if (gastosMes.find(gm => [g.id, g.derivado].includes(gm.id) || [g.id, g.derivado].includes(gm.derivado))) {
+          return false
+        }
         return true
       })
       gastosMes.forEach(g => {
@@ -136,14 +139,22 @@ export const updateMensal = async ({ commiti, rootGetters }, payload) => {
       gastos[gastoIndex].replicado.push(id)
       await mensaisStore.setItem('gastos', gastos)
     }
-    return mensaisStore.setItem(id, gastos)
+    return mensaisStore.setItem(id, gastosMes)
   }
-  gastos[gastoIndex].deletado = payload.data
-  gasto.ano = payload.data.ano
-  gasto.mes = payload.data.mes
-  gasto.derivado = gasto.id
+  const ano = payload.data.ano
+  const mes = payload.data.mes
+  gasto.ano = ano
+  gasto.mes = mes
+  if (gastos[gastoIndex].ano === ano && gastos[gastoIndex].mes === mes) {
+    gastos.splice(gastoIndex, 1)
+  } else {
+    gastos[gastoIndex].deletado = payload.data
+    if (!gasto.derivado) {
+      gasto.derivado = gasto.id
+    }
+  }
   gasto.id = uuid()
-  gastos.push(payload.gasto)
+  gastos.push(gasto)
   return mensaisStore.setItem('gastos', gastos)
 }
 
@@ -178,18 +189,8 @@ export const deleteMensal = async ({ commit }, payload) => {
     return
   }
   const gasto = gastos[deleteIndex]
-  if (gasto.mesesReplicado) {
-    await Promise.all(gasto.mesesReplicado.map(m => {
-      const arrMes = m.split('-')
-      const data = {
-        ano: arrMes[0],
-        mes: arrMes[1]
-      }
-      return deleteMensalMes({ commit }, {
-        data,
-        gastoId: gasto.id
-      })
-    }))
+  if (gasto.replicado) {
+    await deleteReplicadosMensal(commit, gasto.replicado, gasto.id)
   }
   gastos.splice(deleteIndex, 1)
   return mensaisStore.setItem('gastos', gastos)
@@ -203,10 +204,51 @@ export const deleteMensalPartir = async ({ commit }, payload) => {
     return
   }
   const gasto = gastos[deleteIndex]
-  gasto.deletado = payload.data
-  gastos[deleteIndex] = gasto
+  const ano = payload.data.ano
+  const mes = payload.data.mes
+  if (gasto.ano === ano && gasto.mes === mes) {
+    deleteMensal({ commit }, { gastoId: gasto.id })
+  } else {
+    gasto.deletado = payload.data
+    gastos[deleteIndex] = gasto
+    const gastoDeletado = gastos[deleteIndex]
+    if (gastoDeletado.replicado) {
+      const replicadosParaDeletar = gastoDeletado.replicado.filter(m => {
+        const arrMes = m.split('-')
+        const anoReplicado = arrMes[0]
+        const mesReplicado = arrMes[1]
+        if (anoReplicado < ano) {
+          return false
+        }
+        if (anoReplicado > ano) {
+          return true
+        }
+        return mesReplicado >= mes
+      })
+      console.log(replicadosParaDeletar)
+      if (replicadosParaDeletar.length) {
+        console.log('começou')
+        await deleteReplicadosMensal(commit, replicadosParaDeletar, gastoDeletado.id)
+        console.log('terminou')
+      }
+    }
+  }
   return mensaisStore.setItem('gastos', gastos)
 }
+
+const deleteReplicadosMensal = (commit, replicados, gastoId) =>
+  Promise.all(replicados.map(m => {
+    console.log(m)
+    const arrMes = m.split('-')
+    const data = {
+      ano: arrMes[0],
+      mes: arrMes[1]
+    }
+    return deleteMensalMes({ commit }, {
+      data,
+      gastoId
+    })
+  }))
 
 export const addCartao = ({ commit, rootGetters }, gasto) => {
   gasto.id = uuid()
