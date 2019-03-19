@@ -2,7 +2,9 @@
     <q-list>
         <q-list-header>Cartões</q-list-header>
         <q-item :key="c.id" v-for="c in cartoes">
-            <q-item-side left icon="credit_card" />
+            <q-item-side left>
+                <q-icon name="credit_card" color="red" size="24px"/>
+            </q-item-side>
             <!-- <q-item-main :label="`${c.nome}`" :sublabel="`Limite disponível: ${limiteCartao(index)}`"/> -->
             <q-item-main :label="`${c.nome}`" :sublabel="`Dia de fechamento da fatura: ${`0${c.vira}`.slice(-2)}`" @click.native="editar(c.id)"/>
             <q-item-side right>

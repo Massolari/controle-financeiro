@@ -17,14 +17,6 @@
               size="md"
               @click="deletar(c)"
           />
-          <!-- <q-btn -->
-          <!--     icon="create" -->
-          <!--     round -->
-          <!--     outline -->
-          <!--     text-color="blue" -->
-          <!--     size="md" -->
-          <!--     @click="editar(c)" -->
-          <!-- /> -->
         </q-item-side>
       </q-item>
     </q-collapsible>
@@ -66,9 +58,9 @@ export default {
       return descricao
     },
     montarLabel (gasto) {
-      let label = `${this.toMoney(this.$store.getters['toNumber'](gasto.valor))} `
+      let label = `${this.toMoney(gasto.valor)} `
       if (gasto.parcelas > 1) {
-        label += `(${this.toMoney(this.$store.getters['toNumber'](gasto.valor) * gasto.parcelas)})`
+        label += `(${this.toMoney(Number(gasto.valor) * gasto.parcelas)})`
       }
       return label
     },

@@ -17,14 +17,6 @@
               size="md"
               @click="deletar(u.id)"
           />
-          <!-- <q-btn -->
-          <!--     icon="create" -->
-          <!--     round -->
-          <!--     outline -->
-          <!--     text-color="blue" -->
-          <!--     size="md" -->
-          <!--     @click="editar(u.id)" -->
-          <!-- /> -->
         </q-item-side>
       </q-item>
     </q-collapsible>

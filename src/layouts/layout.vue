@@ -30,11 +30,15 @@
       >
         <!-- <q-list-header>Opções</q-list-header> -->
         <q-item exact to="/">
-          <q-item-side icon="attach_money" />
+          <q-item-side left>
+            <q-icon name="attach_money" color="secondary" size="24px"/>
+          </q-item-side>
           <q-item-main label="Resumo" sublabel="Gastos por mês" />
         </q-item>
         <q-item to="/cartao">
-          <q-item-side icon="credit_card" />
+          <q-item-side left>
+              <q-icon name="credit_card" color="red" size="24px"/>
+          </q-item-side>
           <q-item-main label="Cartões de crédito" sublabel="Gerencie seus cartões" />
         </q-item>
       </q-list>
