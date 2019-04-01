@@ -6,7 +6,7 @@
         </q-item-side>
         <q-item-main :label="`Mensais (${toMoney(totalMensais)})`"/>
       </template>
-      <q-item :key="m.id" v-for="m in mensaisNaoExcluidos" :style="{ 'background-color': (m.pago) ? 'lightgreen' : 'white' }">
+      <q-item :key="m.id" v-for="m in mensaisNaoExcluidos">
         <q-item-main :label="toMoney(m.valor)" @click.native="editar(m.id)">
           <q-item-tile sublabel lines="2">
             {{ m.desc }}<br />
@@ -16,11 +16,11 @@
         <!-- <q-item-main :label="toMoney(m.valor)" :sublabel="`${m.desc} (Venc.: ${m.vencimento})`"/> -->
         <q-item-side right>
           <q-btn
-              v-if="m.pago"
+              v-if="!m.pago"
               icon="money_off"
               round
               outline
-              text-color="red"
+              color="faded"
               size="md"
               @click="desmarcarPago(m.id)"
           />

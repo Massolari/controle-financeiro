@@ -2,7 +2,9 @@
   <q-collapsible :opened="totalUnicos > 0" :disable="totalUnicos === 0">
       <template slot="header">
         <q-item-side left>
-          <q-icon name="attach_money" color="secondary" size="24px"/>
+          <!-- <q-icon name="attach_money" color="secondary" size="24px"/> -->
+          <!-- <q-icon name="far fa-money-bill-alt" color="secondary" size="24px"/> -->
+          <q-icon name="fas fa-coins" color="secondary" size="24px"/>
         </q-item-side>
         <q-item-main :label="`Únicos (${toMoney(totalUnicos)})`" />
       </template>
