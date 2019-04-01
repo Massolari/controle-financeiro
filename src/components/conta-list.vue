@@ -30,6 +30,8 @@
     <list-gastos-mensais
         @deletar="deletarMensal"
         @editar="editarMensal"
+        @marcar="marcarMensal"
+        @desmarcar="desmarcarMensal"
     ></list-gastos-mensais>
     <q-item-separator></q-item-separator>
     <list-gastos-cartao
@@ -70,6 +72,12 @@ export default {
     },
     deletarMensal (gastoId) {
       this.$emit('deletarMensal', gastoId)
+    },
+    marcarMensal (gastoId) {
+      this.$emit('marcarMensal', gastoId)
+    },
+    desmarcarMensal (gastoId) {
+      this.$emit('desmarcarMensal', gastoId)
     },
     editarCartao (gastoId) {
       this.$emit('editarCartao', gastoId)

@@ -6,7 +6,7 @@
         </q-item-side>
         <q-item-main :label="`Mensais (${toMoney(totalMensais)})`"/>
       </template>
-      <q-item :key="m.id" v-for="m in mensaisNaoExcluidos">
+      <q-item :key="m.id" v-for="m in mensaisNaoExcluidos" :style="{ 'background-color': (m.pago) ? 'lightgreen' : 'white' }">
         <q-item-main :label="toMoney(m.valor)" @click.native="editar(m.id)">
           <q-item-tile sublabel lines="2">
             {{ m.desc }}<br />
@@ -16,6 +16,24 @@
         <!-- <q-item-main :label="toMoney(m.valor)" :sublabel="`${m.desc} (Venc.: ${m.vencimento})`"/> -->
         <q-item-side right>
           <q-btn
+              v-if="m.pago"
+              icon="money_off"
+              round
+              outline
+              text-color="red"
+              size="md"
+              @click="desmarcarPago(m.id)"
+          />
+          <q-btn
+              v-else
+              icon="attach_money"
+              round
+              outline
+              text-color="green"
+              size="md"
+              @click="marcarPago(m.id)"
+          />
+          <q-btn
               icon="delete"
               round
               outline
@@ -23,14 +41,6 @@
               size="md"
               @click="deletar(m.id)"
           />
-          <!-- <q-btn -->
-          <!--     icon="create" -->
-          <!--     round -->
-          <!--     outline -->
-          <!--     text-color="blue" -->
-          <!--     size="md" -->
-          <!--     @click="editar(m.id)" -->
-          <!-- /> -->
         </q-item-side>
       </q-item>
     </q-collapsible>
@@ -51,6 +61,12 @@ export default {
     },
     deletar (id) {
       this.$emit('deletar', id)
+    },
+    marcarPago (id) {
+      this.$emit('marcar', id)
+    },
+    desmarcarPago (id) {
+      this.$emit('desmarcar', id)
     },
     montaVencimento (diaVencimento) {
       const data = new Date()

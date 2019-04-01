@@ -13,8 +13,8 @@ export const carregar = ({ state }, { data }) => {
     unicosStore.getItem(id),
     new Promise(async (resolve) => {
       const gastosMes = await mensaisStore.getItem(id) || []
-      let gastos = await mensaisStore.getItem('gastos') || []
-      gastos = gastos.filter(g => {
+      const todosGastos = await mensaisStore.getItem('gastos') || []
+      const gastos = todosGastos.filter(g => {
         if (g.ano > data.ano) {
           return false
         }
@@ -25,10 +25,8 @@ export const carregar = ({ state }, { data }) => {
           if (g.deletado.ano < data.ano) {
             return false
           }
-          if (g.deletado.ano === data.ano) {
-            if (g.deletado.mes <= data.mes) {
-              return false
-            }
+          if (g.deletado.ano === data.ano && g.deletado.mes <= data.mes) {
+            return false
           }
         }
         if (g.mesesDeletado && g.mesesDeletado.includes(id)) {
@@ -43,16 +41,16 @@ export const carregar = ({ state }, { data }) => {
         const index = gastos.findIndex(gasto => gasto.id === g.id)
         if (index > -1) {
           gastos[index] = g
-        } else {
-          gastos.push(g)
+          return
         }
+        gastos.push(g)
       })
       console.log(gastos)
       state.mensais = gastos
       resolve()
     }),
     cartaoStore.getItem(id)
-  ]).then(([unicos, mensais, cartao]) => {
+  ]).then(([unicos, _, cartao]) => {
     state.unicos = unicos || []
     state.cartao = cartao || []
   })
