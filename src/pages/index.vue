@@ -5,6 +5,8 @@
       @editarUnico="editarUnico"
       @deletarUnico="deletarUnico"
       @editarMensal="editarMensal"
+      @marcarMensal="marcarMensal"
+      @desmarcarMensal="desmarcarMensal"
       @deletarMensal="deletarMensal"
       @editarCartao="editarCartao"
       @deletarCartao="deletarCartao"
@@ -214,6 +216,12 @@ export default {
       }
       this.editar.gasto.cartao = gasto
       this.editar.modal.cartao = true
+    },
+    marcarMensal (gastoId) {
+
+    },
+    desmarcarMensal (gastoId) {
+
     },
     confirmarDeletarMensal () {
       return this.$q.dialog({
