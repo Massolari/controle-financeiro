@@ -75,7 +75,7 @@ export const addUnico = async ({ commit, rootGetters }, gasto) => {
   })
 }
 
-export const updateUnico = async ({ commiti, rootGetters }, gasto) => {
+export const updateUnico = async ({ commit, rootGetters }, gasto) => {
   const id = `${gasto.ano}-${gasto.mes}`
   const gastos = await unicosStore.getItem(id)
   const updateIndex = gastos.findIndex(g => g.id === gasto.id)
@@ -114,31 +114,37 @@ export const addMensal = ({ commit, rootState, rootGetters }, gasto) => {
   })
 }
 
-export const updateMensal = async ({ commiti, rootGetters }, payload) => {
-  const id = `${payload.data.ano}-${payload.data.mes}`
-  const gasto = payload.gasto
+export const updateEsteMensal = async ({ commit, rootGetters }, { id, gasto }) => {
   const gastos = await mensaisStore.getItem('gastos')
-  const gastoIndex = gastos.findIndex(g => g.id === payload.gasto.id)
+  const gastosMes = await mensaisStore.getItem(id) || []
+  const gastoMesIndex = gastosMes.findIndex(g => g.id === gasto.id)
+  const gastoIndex = gastos.findIndex(g => g.id === gasto.id)
+  if (gastoMesIndex > -1) {
+    gastosMes[gastoMesIndex] = gasto
+  } else {
+    gastosMes.push(gasto)
+  }
+  if (!gastos[gastoIndex].replicado) {
+    gastos[gastoIndex].replicado = []
+  }
+  if (!gastos[gastoIndex].replicado.includes(id)) {
+    gastos[gastoIndex].replicado.push(id)
+    await mensaisStore.setItem('gastos', gastos)
+  }
+  return mensaisStore.setItem(id, gastosMes)
+}
+
+export const updateMensal = async ({ commit, rootGetters }, payload) => {
+  const id = `${payload.data.ano}-${payload.data.mes}`
+  const { gasto } = payload
   if ((typeof gasto.valor) === 'string') {
     gasto.valor = rootGetters.toNumber(gasto.valor)
   }
   if (payload.opcao === 'este') {
-    const gastosMes = await mensaisStore.getItem(id) || []
-    const gastoMesIndex = gastosMes.findIndex(g => g.id === gasto.id)
-    if (gastoMesIndex > -1) {
-      gastosMes[gastoMesIndex] = gasto
-    } else {
-      gastosMes.push(gasto)
-    }
-    if (!gastos[gastoIndex].replicado) {
-      gastos[gastoIndex].replicado = []
-    }
-    if (!gastos[gastoIndex].replicado.includes(id)) {
-      gastos[gastoIndex].replicado.push(id)
-      await mensaisStore.setItem('gastos', gastos)
-    }
-    return mensaisStore.setItem(id, gastosMes)
+    return updateEsteMensal({ commit, rootGetters }, { id, gasto })
   }
+  const gastos = await mensaisStore.getItem('gastos')
+  const gastoIndex = gastos.findIndex(g => g.id === gasto.id)
   const ano = payload.data.ano
   const mes = payload.data.mes
   gasto.ano = ano
